@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import LogoutComponent from './LogoutComponent';
+import { FaBars, FaTimes } from 'react-icons/fa';
+import LeftAccordion from './LeftAccordion';
 import { AuthContext } from '../context/AuthContext';
 
 const HeaderComponent = () => {
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, logout } = useContext(AuthContext);
+    const token = localStorage.getItem('token');
+    const [isOpen, setIsOpen] = useState(true); 
     const [dateTime, setDateTime] = useState(new Date());
     const navigate = useNavigate();
 
@@ -28,6 +31,15 @@ const HeaderComponent = () => {
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
+
+    const toggleAccordion = () => {
+        setIsOpen(prevState => !prevState);
+    };
+
     const headerStyle = {
         backgroundColor: 'rgb(3, 14, 3)',
         padding: '0.5rem 1rem',
@@ -36,12 +48,30 @@ const HeaderComponent = () => {
         top: 0,
         left: 0,
         zIndex: 1000,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     };
 
-    const navStyle = {
+    const logoContainerStyle = {
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        
+    };
+
+    const toggleButtonStyle = {
+        width: '40px',
+        height: '40px',
+        backgroundColor: 'rgb(3, 14, 3)',
+        color: 'white',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'pointer',
+        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+        marginRight: '10px', // Space between toggle button and logo text
     };
 
     const dateStyle = {
@@ -49,31 +79,22 @@ const HeaderComponent = () => {
         marginRight: '1rem',
     };
 
-    const linkStyle = {
-        backgroundColor: '#007bff',
-        color: 'white',
-        padding: '0.5rem 1rem',
-        textDecoration: 'none',
-        borderRadius: '0.25rem',
-    };
-
     return (
-        <div>
-            <header style={headerStyle}>
-                <nav style={navStyle}>
-                    <div
-                        onClick={handleLogoClick}
-                        style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }}
-                    >
-                        Employee Management System
-                    </div>
-                    <div style={dateStyle}>
-                        {formatDateTime(dateTime)}
-                    </div>
-                   
-                </nav>
-            </header>
-        </div>
+        <header style={headerStyle}>
+            <div style={logoContainerStyle}>
+            {isAuthenticated && !!token &&
+                <button style={toggleButtonStyle} onClick={toggleAccordion}>
+                    {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+                </button>}
+                <div onClick={handleLogoClick} style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }}>
+                    Employee Management System
+                </div>
+            </div>
+            <div style={dateStyle}>
+                {formatDateTime(dateTime)}
+            </div>
+            <LeftAccordion isOpen={isOpen} handleLogout={handleLogout} />
+        </header>
     );
 };
 

@@ -6,7 +6,7 @@ const EmployeeComponent = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
-    const [mobileNo, setmobileNo] = useState('');
+    const [mobileNo, setMobileNo] = useState('');
     const [errors, setErrors] = useState({
         firstName: '',
         lastName: '',
@@ -15,7 +15,7 @@ const EmployeeComponent = () => {
     });
 
     const { id } = useParams();
-    const navigator = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (id) {
@@ -23,7 +23,7 @@ const EmployeeComponent = () => {
                 setFirstName(response.data.firstName);
                 setLastName(response.data.lastName);
                 setEmail(response.data.email);
-                setmobileNo(response.data.mobileNo);
+                setMobileNo(response.data.mobileNo);
             }).catch(error => {
                 console.error('Error fetching employee:', error);
             });
@@ -39,14 +39,14 @@ const EmployeeComponent = () => {
             if (id) {
                 updateEmployee(id, employee).then((response) => {
                     console.log('Update response:', response.data);
-                    navigator('/employees');
+                    navigate('/employees');
                 }).catch(error => {
                     console.error('Error updating employee:', error);
                 });
             } else {
                 createEmployee(employee).then((response) => {
                     console.log('Create response:', response.data);
-                    navigator('/employees');
+                    navigate('/employees');
                 }).catch(error => {
                     console.error('Error creating employee:', error);
                 });
@@ -58,31 +58,37 @@ const EmployeeComponent = () => {
         let valid = true;
         const errorsCopy = { ...errors };
 
-        if (firstName.trim()) {
+        // Validate First Name
+        if (/^[a-zA-Z]+$/.test(firstName.trim())) {
             errorsCopy.firstName = '';
         } else {
-            errorsCopy.firstName = 'First name is required';
+            errorsCopy.firstName = 'First name must contain only characters';
             valid = false;
         }
 
-        if (lastName.trim()) {
+        // Validate Last Name
+        if (/^[a-zA-Z]+$/.test(lastName.trim())) {
             errorsCopy.lastName = '';
         } else {
-            errorsCopy.lastName = 'Last name is required';
+            errorsCopy.lastName = 'Last name must contain only characters';
             valid = false;
         }
 
-        if (email.trim()) {
+        // Validate Email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailRegex.test(email.trim())) {
             errorsCopy.email = '';
         } else {
-            errorsCopy.email = 'Email is required';
+            errorsCopy.email = 'Invalid email format';
             valid = false;
         }
 
-        if (mobileNo.trim()) {
+        // Validate Mobile No
+        const mobileNoRegex = /^\d{10}$/;
+        if (mobileNoRegex.test(mobileNo.trim())) {
             errorsCopy.mobileNo = '';
         } else {
-            errorsCopy.mobileNo = 'Mobile No is required';
+            errorsCopy.mobileNo = 'Mobile No must be 10 digits long and contain only numbers';
             valid = false;
         }
 
@@ -98,7 +104,7 @@ const EmployeeComponent = () => {
         <div className='container'>
             <br /> <br />
             <div className='row'>
-                <div className='card col-md-6 offset-md-3 offset-md-3'>
+                <div className='card col-md-6 offset-md-3'>
                     {pageTitle()}
                     <div className='card-body'>
                         <form>
@@ -136,7 +142,7 @@ const EmployeeComponent = () => {
                                     name='mobileNo'
                                     value={mobileNo}
                                     className={`form-control ${errors.mobileNo ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setmobileNo(e.target.value)}
+                                    onChange={(e) => setMobileNo(e.target.value)}
                                 />
                                 {errors.mobileNo && <div className='invalid-feedback'>{errors.mobileNo}</div>}
                             </div>

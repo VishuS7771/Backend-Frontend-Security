@@ -3,8 +3,10 @@
 .employee-container {
   padding: 20px;
   max-width: 1200px;
-  margin: auto;
+  margin: 0 auto; /* Center horizontally */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff; /* Ensure background color for visibility */
+  flex: 1; /* Allow it to expand within flex container */
 }
 
 .employee-table {

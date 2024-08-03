@@ -24,19 +24,21 @@ const LoginComponent = () => {
 
     const containerStyle = {
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
+        justifyContent: 'flex-start',
         padding: '20px',
         textAlign: 'center',
+    };
+
+    const formWrapperStyle = {
+        width: '100%',
+        maxWidth: '400px',
+        marginLeft: '500px', // Adjust this value to move the form slightly to the right
     };
 
     const formStyle = {
         display: 'flex',
         flexDirection: 'column',
         gap: '10px',
-        maxWidth: '400px',
-        width: '100%',
     };
 
     const buttonStyle = {
@@ -56,25 +58,27 @@ const LoginComponent = () => {
 
     return (
         <div style={containerStyle}>
-            <form style={formStyle} onSubmit={handleLogin}>
+            <div style={formWrapperStyle}>
                 <h2>Login</h2>
-                <input
-                    type='text'
-                    placeholder='Username'
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <input
-                    type='password'
-                    placeholder='Password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button type='submit' style={buttonStyle}>Login</button>
-                <Link to='/register' style={linkStyle}>Sign Up</Link>
-            </form>
+                <form style={formStyle} onSubmit={handleLogin}>
+                    <input
+                        type='text'
+                        placeholder='Username'
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                    <input
+                        type='password'
+                        placeholder='Password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <button type='submit' style={buttonStyle}>Login</button>
+                    <Link to='/register' style={linkStyle}>Sign Up</Link>
+                </form>
+            </div>
         </div>
     );
 };
