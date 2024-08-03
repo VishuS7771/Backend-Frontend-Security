@@ -1,0 +1,8 @@
+/* FooterComponent.css */
+
+.footer {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 1rem;
+    flex-shrink: 0;
+  }
