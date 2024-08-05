@@ -6,7 +6,6 @@ import { AuthContext } from '../context/AuthContext';
 
 const HeaderComponent = () => {
     const { isAuthenticated, logout } = useContext(AuthContext);
-    const token = localStorage.getItem('token');
     const [isOpen, setIsOpen] = useState(true); 
     const [dateTime, setDateTime] = useState(new Date());
     const navigate = useNavigate();
@@ -56,22 +55,21 @@ const HeaderComponent = () => {
     const logoContainerStyle = {
         display: 'flex',
         alignItems: 'center',
-        
     };
 
     const toggleButtonStyle = {
         width: '40px',
         height: '40px',
-        backgroundColor: 'rgb(3, 14, 3)',
+        backgroundColor: 'rgb(3, 14, 3)', // same as header background
+        border: 'none',
         color: 'white',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        border: 'none',
-        borderRadius: '50%',
         cursor: 'pointer',
+        borderRadius: '4px',
         boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
-        marginRight: '10px', // Space between toggle button and logo text
+        zIndex: 1001, // Ensure it sits on top of other content
     };
 
     const dateStyle = {
@@ -82,8 +80,7 @@ const HeaderComponent = () => {
     return (
         <header style={headerStyle}>
             <div style={logoContainerStyle}>
-            {isAuthenticated && !!token &&
-                <button style={toggleButtonStyle} onClick={toggleAccordion}>
+               {isAuthenticated && <button style={toggleButtonStyle} onClick={toggleAccordion}>
                     {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
                 </button>}
                 <div onClick={handleLogoClick} style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }}>

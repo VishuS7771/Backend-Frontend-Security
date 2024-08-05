@@ -5,14 +5,45 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDto {
-    private Long id;
-    private String firstName;
-    private String lastName;
+
+    private Long empId;
+
+    private String name;
+
+    private long designationId;
+
     private String email;
+
     private String mobileNo;
+
+    private long userTypeId;
+
+    private String currentAddress;
+
+    private String permanentAddress;
+
+    private long departmentId;
+
+    private String dateOfJoining;
+
+    private String  dateOfBirth;
+
+    private String state;
+
+    private String branch;
+
+    private String product;
+
+    private String manager;
+
+    private String hrManager;
+
+    private String payrollManager;
 }

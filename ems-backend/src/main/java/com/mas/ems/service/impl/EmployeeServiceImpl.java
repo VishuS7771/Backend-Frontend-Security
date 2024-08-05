@@ -8,6 +8,8 @@ import com.mas.ems.exception.ResourceNotFoundException;
 import com.mas.ems.mapper.EmployeeMapper;
 import com.mas.ems.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,11 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(()
                 -> new ResourceNotFoundException("Employee is not exists with given id: " + employeeId,"400"));
 
-        employee.setFirstName(updatedEmployee.getFirstName());
-        employee.setLastName(updatedEmployee.getLastName());
-        employee.setEmail(updatedEmployee.getEmail());
-        employee.setMobileNo(updatedEmployee.getMobileNo());
-
+         employee = EmployeeMapper.mapToEmployee(updatedEmployee);
         Employee updatedEmployeeObj = employeeRepository.save(employee);
 
         return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);

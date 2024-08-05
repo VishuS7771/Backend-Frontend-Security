@@ -11,6 +11,7 @@ import LeftAccordion from './components/LeftAccordion';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthProvider from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import LeaveRequestComponent from './components/LeaveRequestComponent';
 
 function App() {
     const contentStyle = {
@@ -60,6 +61,14 @@ function App() {
                                     <EncryptData />
                                 </ProtectedRoute>
                             } 
+                        />
+                          <Route
+                            path='/leave-request'
+                            element={
+                                <ProtectedRoute>
+                                    <LeaveRequestComponent />
+                                </ProtectedRoute>
+                            }
                         />
                         <Route path='/unauthorized' element={<UnauthorizedAccess />} />
                     </Routes>

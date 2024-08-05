@@ -1,9 +1,61 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import axiosInstance from '../services/axiosInstance';
 
 const LeftAccordion = ({ isOpen, handleLogout }) => {
-    const { isAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, userId } = useContext(AuthContext);
+    const [isClockedIn, setIsClockedIn] = useState(false);
+    const [hasPunchedOutToday, setHasPunchedOutToday] = useState(false);
+
+    useEffect(() => {
+        const fetchClockStatus = async () => {
+            try {
+                const response = await axiosInstance.get(`/attendance/clock-status/${userId}`);
+                const { isClockedIn, hasPunchedOutToday } = response.data;
+                setIsClockedIn(isClockedIn);
+                setHasPunchedOutToday(hasPunchedOutToday);
+
+                // Save to localStorage to persist state across page reloads
+                localStorage.setItem('hasPunchedOutToday', hasPunchedOutToday);
+            } catch (error) {
+                console.error('Error fetching clock status:', error);
+            }
+        };
+
+        if (userId) {
+            fetchClockStatus();
+        }
+
+        // Retrieve from localStorage on component mount
+        const storedPunchOutStatus = localStorage.getItem('hasPunchedOutToday');
+        if (storedPunchOutStatus !== null) {
+            setHasPunchedOutToday(JSON.parse(storedPunchOutStatus));
+        }
+    }, [userId]);
+
+    const handlePunchInOut = async () => {
+        if (hasPunchedOutToday) {
+            // Prevent action if the user has already punched out
+            return;
+        }
+
+        try {
+            if (isClockedIn) {
+                await axiosInstance.post(`/attendance/clockOut/${userId}`);
+                setIsClockedIn(false);
+                setHasPunchedOutToday(true);
+                localStorage.setItem('hasPunchedOutToday', true); // Update localStorage
+            } else {
+                await axiosInstance.post(`/attendance/clockIn/${userId}`);
+                setIsClockedIn(true);
+                setHasPunchedOutToday(false);
+                localStorage.setItem('hasPunchedOutToday', false); // Update localStorage
+            }
+        } catch (error) {
+            console.error('Error handling punch in/out:', error);
+        }
+    };
 
     if (!isAuthenticated) return null;
 
@@ -31,11 +83,33 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
         backgroundColor: '#eaeaea',
     };
 
+    const buttonStyle = {
+        display: 'block',
+        padding: '8px',
+        textDecoration: 'none',
+        color: '#fff',
+        marginBottom: '10px',
+        borderRadius: '4px',
+        backgroundColor: isClockedIn ? '#b71c1c' : '#388e3c',
+        cursor: hasPunchedOutToday ? 'not-allowed' : 'pointer',
+        textAlign: 'center',
+        fontSize: '14px',
+        opacity: hasPunchedOutToday ? '0.6' : '1',
+    };
+
     return (
         <div style={accordionStyle}>
+            <div
+                style={buttonStyle}
+                onClick={handlePunchInOut}
+                aria-disabled={hasPunchedOutToday ? 'true' : 'false'}
+            >
+                {isClockedIn ? 'Punch Out' : 'Punch In'}
+            </div>
             <Link to="/employees" style={linkStyle}>Employees</Link>
             <Link to="/add-employee" style={linkStyle}>Add Employee</Link>
             <Link to="/encrypt" style={linkStyle}>Encrypt Data</Link>
+            <Link to="/leave-request" style={linkStyle}>Leave Request</Link>
             <div style={linkStyle} onClick={handleLogout}>Logout</div>
         </div>
     );

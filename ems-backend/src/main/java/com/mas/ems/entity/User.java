@@ -10,14 +10,14 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "Tbl_users",schema = "appuser")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
 
     private String username;
@@ -25,8 +25,6 @@ public class User {
     private String password;
 
 
-
-
-
-
+    public User(Long userId) {
+    }
 }

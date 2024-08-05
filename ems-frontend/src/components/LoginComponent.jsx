@@ -13,8 +13,7 @@ const LoginComponent = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const token = await loginUser({ username, password });
-            login(token); 
+            const token = await loginUser({ username, password, login });
             navigate('/employees'); 
         } catch (error) {
             alert('Login failed, Please try again.');
@@ -24,7 +23,7 @@ const LoginComponent = () => {
 
     const containerStyle = {
         display: 'flex',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         padding: '20px',
         textAlign: 'center',
     };
@@ -32,7 +31,6 @@ const LoginComponent = () => {
     const formWrapperStyle = {
         width: '100%',
         maxWidth: '400px',
-        marginLeft: '500px', // Adjust this value to move the form slightly to the right
     };
 
     const formStyle = {

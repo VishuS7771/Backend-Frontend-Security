@@ -1,27 +1,23 @@
 package com.mas.ems.component;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class JwtAuthenticationResponse {
     private String accessToken;
     private String tokenType = "Bearer";
+    private long userId;
 
-    public JwtAuthenticationResponse(String accessToken) {
-        this.accessToken = accessToken;
+
+    public JwtAuthenticationResponse(String jwt) {
     }
 
-    // Getters and setters
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getTokenType() {
-        return tokenType;
-    }
-
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
+    public JwtAuthenticationResponse(String jwt, Long userId) {
     }
 }

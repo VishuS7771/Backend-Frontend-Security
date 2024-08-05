@@ -46,7 +46,7 @@ const RegisterComponent = () => {
             setConfirmPasswordMessage('Passwords do not match.');
             setConfirmPasswordMessageColor('red');
         } else {
-            setConfirmPasswordMessage();
+            setConfirmPasswordMessage('Passwords match.');
             setConfirmPasswordMessageColor('green');
         }
     };
@@ -136,6 +136,7 @@ const RegisterComponent = () => {
                     required
                 />
                 <button type='submit' style={buttonStyle}>Register</button>
+                
             </form>
             <Link to='/' style={linkStyle}>Login</Link>
             {(isTypingPassword || passwordMessage) && (

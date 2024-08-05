@@ -54,10 +54,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers("/", "/index.html", "/static/**").permitAll() // Allow access to static resources
-                .antMatchers("/api/**").permitAll() // Allow access to authentication endpoints
-                .anyRequest().authenticated() // Require authentication for all other requests
+                .antMatchers("/", "/index.html", "/static/**").permitAll()
+                .antMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
+
 }

@@ -1,41 +1,102 @@
 import React, { useState, useEffect } from 'react';
 import { createEmployee, getEmployee, updateEmployee } from '../services/EmployeeService';
 import { useNavigate, useParams } from 'react-router-dom';
+import axiosInstance from '../services/axiosInstance';
+
 
 const EmployeeComponent = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [mobileNo, setMobileNo] = useState('');
-    const [errors, setErrors] = useState({
-        firstName: '',
-        lastName: '',
+    const [employee, setEmployee] = useState({
+        empId: '',
+        name: '',
+        designationId: '',
         email: '',
-        mobileNo: ''
+        mobileNo: '',
+        userTypeId: '',
+        currentAddress: '',
+        permanentAddress: '',
+        departmentId: '',
+        dateOfJoining: '',
+        dateOfBirth: '',
+        state: '',
+        branch: '',
+        product: '',
+        reportingManager: '',
+        manager: '',
+        hrManager: '',
+        payrollManager: '',
     });
 
+    const [departments, setDepartments] = useState([]);
+    const [designations, setDesignations] = useState([]);
+    const [errors, setErrors] = useState({});
+    const [userTypes, setUserTypes] = useState([]);
+    
     const { id } = useParams();
     const navigate = useNavigate();
 
+ 
     useEffect(() => {
+        axiosInstance.get('/department/getAll')
+            .then(response => {
+                setDepartments(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching departments:', error);
+            });
+
         if (id) {
             getEmployee(id).then((response) => {
-                setFirstName(response.data.firstName);
-                setLastName(response.data.lastName);
-                setEmail(response.data.email);
-                setMobileNo(response.data.mobileNo);
+                setEmployee(response.data);
+
+                if (response.data.departmentId) {
+                    fetchDesignations(response.data.departmentId);
+                }
             }).catch(error => {
                 console.error('Error fetching employee:', error);
             });
         }
-    }, [id]);
+    }, [id]
 
-    function saveOrUpdateEmployee(e) {
+);
+useEffect(() => {
+    axiosInstance.get('/usertype/getall')
+        .then(response => {
+            console.log(response);
+            setUserTypes(response.data);
+        })
+        .catch(error => {
+            console.error('Error fetching user types:', error);
+        });
+}, []);
+
+
+    const fetchDesignations = (departmentId) => {
+        axiosInstance.get(`/designation/getdeslist/${departmentId}`)
+            .then(response => {
+                console.log(response);
+                setDesignations(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching designations:', error);
+            });
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setEmployee((prevState) => ({
+            ...prevState,
+            [name]: value
+        }));
+        if (name === 'departmentId') {
+            fetchDesignations(value);
+        }
+        setSelectedUserType(e.target.value);
+    };
+
+    const saveOrUpdateEmployee = (e) => {
         e.preventDefault();
 
         if (validateForm()) {
-            const employee = { firstName, lastName, email, mobileNo };
-
             if (id) {
                 updateEmployee(id, employee).then((response) => {
                     console.log('Update response:', response.data);
@@ -52,115 +113,308 @@ const EmployeeComponent = () => {
                 });
             }
         }
-    }
+    };
 
-    function validateForm() {
+    const validateForm = () => {
         let valid = true;
-        const errorsCopy = { ...errors };
+        const errorsCopy = {};
 
-        // Validate First Name
-        if (/^[a-zA-Z]+$/.test(firstName.trim())) {
-            errorsCopy.firstName = '';
+      
+        if (/^[a-zA-Z\s]+$/.test(employee.name.trim())) {
+            errorsCopy.name = '';
         } else {
-            errorsCopy.firstName = 'First name must contain only characters';
+            errorsCopy.name = 'Name must contain only characters';
             valid = false;
         }
 
-        // Validate Last Name
-        if (/^[a-zA-Z]+$/.test(lastName.trim())) {
-            errorsCopy.lastName = '';
-        } else {
-            errorsCopy.lastName = 'Last name must contain only characters';
-            valid = false;
-        }
-
-        // Validate Email
+      
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailRegex.test(email.trim())) {
+        if (emailRegex.test(employee.email.trim())) {
             errorsCopy.email = '';
         } else {
             errorsCopy.email = 'Invalid email format';
             valid = false;
         }
 
-        // Validate Mobile No
+      
         const mobileNoRegex = /^\d{10}$/;
-        if (mobileNoRegex.test(mobileNo.trim())) {
+        if (mobileNoRegex.test(employee.mobileNo.trim())) {
             errorsCopy.mobileNo = '';
         } else {
             errorsCopy.mobileNo = 'Mobile No must be 10 digits long and contain only numbers';
             valid = false;
         }
 
+     
+
         setErrors(errorsCopy);
         return valid;
-    }
+    };
 
-    function pageTitle() {
+    const pageTitle = () => {
         return id ? <h2 className='text-center'>Update Employee</h2> : <h2 className='text-center'>Add Employee</h2>;
-    }
+    };
 
     return (
         <div className='container'>
             <br /> <br />
             <div className='row'>
-                <div className='card col-md-6 offset-md-3'>
+                <div className='card col-md-8 offset-md-2'>
                     {pageTitle()}
                     <div className='card-body'>
                         <form>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>First Name:</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee First Name'
-                                    name='firstName'
-                                    value={firstName}
-                                    className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                />
-                                {errors.firstName && <div className='invalid-feedback'>{errors.firstName}</div>}
+                            <div className='row mb-2'>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Name:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Employee Name'
+                                            name='name'
+                                            value={employee.name}
+                                            className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+                                            onChange={handleChange}
+                                        />
+                                        {errors.name && <div className='invalid-feedback'>{errors.name}</div>}
+                                    </div>
+                                </div>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Email:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Employee Email'
+                                            name='email'
+                                            value={employee.email}
+                                            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                                            onChange={handleChange}
+                                        />
+                                        {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Last Name:</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Last Name'
-                                    name='lastName'
-                                    value={lastName}
-                                    className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                />
-                                {errors.lastName && <div className='invalid-feedback'>{errors.lastName}</div>}
+                            <div className='row mb-2'>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Mobile No:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Employee Mobile No'
+                                            name='mobileNo'
+                                            value={employee.mobileNo}
+                                            className={`form-control ${errors.mobileNo ? 'is-invalid' : ''}`}
+                                            onChange={handleChange}
+                                        />
+                                        {errors.mobileNo && <div className='invalid-feedback'>{errors.mobileNo}</div>}
+                                    </div>
+                                </div>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Department:</label>
+                                        <select
+                                            name='departmentId'
+                                            value={employee.departmentId}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        >
+                                            <option value=''>--Select Department--</option>
+                                            {departments.map(dept => (
+                                                <option key={dept.departmentId} value={dept.departmentId}>
+                                                    {dept.departmentName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className='row mb-2'>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Designation:</label>
+                                        <select
+                                            name='designationId'
+                                            value={employee.designationId}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        >
+                                            <option value=''>--Select Designation--</option>
+                                            {designations.map(desig => (
+                                                <option key={desig.designationId} value={desig.designationId}>
+                                                    {desig.designationName}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                             
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>User Type:</label>
+                                        <select
+                                            name='userTypeId'
+                                            value={employee.userTypeId}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        >
+                                            <option value=''>--Select User Type--</option>
+                                            {userTypes.map(userType => (
+                                                <option key={userType.userTypeId} value={userType.userTypeId}>
+                                                    {userType.userType}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                
+                            </div>
                             </div>
 
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Mobile No:</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Mobile No'
-                                    name='mobileNo'
-                                    value={mobileNo}
-                                    className={`form-control ${errors.mobileNo ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setMobileNo(e.target.value)}
-                                />
-                                {errors.mobileNo && <div className='invalid-feedback'>{errors.mobileNo}</div>}
+                            <div className='row mb-2'>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Current Address:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Current Address'
+                                            name='currentAddress'
+                                            value={employee.currentAddress}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Permanent Address:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Permanent Address'
+                                            name='permanentAddress'
+                                            value={employee.permanentAddress}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Email:</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Email'
-                                    name='email'
-                                    value={email}
-                                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                                {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
+                            <div className='row mb-2'>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Date of Joining:</label>
+                                        <input
+                                            type='date'
+                                            name='dateOfJoining'
+                                            value={employee.dateOfJoining}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Date of Birth:</label>
+                                        <input
+                                            type='date'
+                                            name='dateOfBirth'
+                                            value={employee.dateOfBirth}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
-                            <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Submit</button>
+                            <div className='row mb-2'>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>State:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter State'
+                                            name='state'
+                                            value={employee.state}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Branch:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Branch'
+                                            name='branch'
+                                            value={employee.branch}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className='row mb-2'>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Product:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Product'
+                                            name='product'
+                                            value={employee.product}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Manager:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Manager'
+                                            name='manager'
+                                            value={employee.manager}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className='row mb-2'>
+                               
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>HR Manager:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter HR Manager'
+                                            name='hrManager'
+                                            value={employee.hrManager}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='col-md-6'>
+                                    <div className='form-group'>
+                                        <label className='form-label'>Payroll Manager:</label>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Payroll Manager'
+                                            name='payrollManager'
+                                            value={employee.payrollManager}
+                                            className='form-control'
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Save</button>
+                            <button className='btn btn-danger' onClick={() => navigate('/employees')} style={{ marginLeft: '10px' }}>Cancel</button>
                         </form>
                     </div>
                 </div>

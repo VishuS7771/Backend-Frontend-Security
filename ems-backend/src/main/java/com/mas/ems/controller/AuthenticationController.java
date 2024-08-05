@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/auth")
@@ -52,13 +54,18 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {
+        Optional<User> user =userRepository.findByUsername(loginRequest.getUsername());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        JwtAuthenticationResponse jwtAuthenticationResponse=new JwtAuthenticationResponse();
+        jwtAuthenticationResponse.setAccessToken(jwt);
+        jwtAuthenticationResponse.setUserId(user.get().getUserId());
+
+        return ResponseEntity.ok(jwtAuthenticationResponse);
     }
 
     @PostMapping("/logout")

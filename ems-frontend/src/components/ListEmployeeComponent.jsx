@@ -39,7 +39,7 @@ const ListEmployeeComponent = () => {
         <tr>
             <th>SR.No</th> {/* Auto-incrementing number column */} 
             <th>Employee First Name</th>
-            <th>Employee Last Name</th>
+            <th>Employee Address</th>
             <th>Employee Email Id</th>
             <th>Employee Mobile No</th>
             <th>Actions</th>
@@ -47,15 +47,15 @@ const ListEmployeeComponent = () => {
     </thead>
     <tbody>
         {employees.map((employee, index) => (
-            <tr key={employee.id}>
+            <tr key={employee.empId}>
                 <td>{index + 1}</td> {/* Auto-incrementing number */}
-                <td>{employee.firstName}</td>
-                <td>{employee.lastName}</td>
+                <td>{employee.name}</td>
+                <td>{employee.currentAddress}</td>
                 <td>{employee.email}</td>
                 <td>{employee.mobileNo}</td>
                 <td className='employee-actions'>
-                    <button className='btn-info' onClick={() => updateEmployee(employee.id)}>Edit</button>
-                    <button className='btn-danger' onClick={() => removeEmployee(employee.id)}>Delete</button>
+                    <button className='btn-info' onClick={() => updateEmployee(employee.empId)}>Edit</button>
+                    <button className='btn-danger' onClick={() => removeEmployee(employee.empId)}>Delete</button>
                 </td>
             </tr>
         ))}
