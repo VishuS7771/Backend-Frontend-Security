@@ -1,0 +1,52 @@
+/* LeftAccordion.css */
+.left-accordion {
+    width: 0;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    height: calc(100% - 60px);
+    background-color: #f4f4f4;
+    padding: 0;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    transition: width 0.3s, padding 0.3s;
+    z-index: 1000;
+}
+
+.left-accordion.open {
+    width: 250px;
+    padding: 1rem;
+}
+
+.left-accordion .link {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    background-color: #eaeaea;
+}
+
+.left-accordion .link.active {
+    background-color: #ddd;
+    font-weight: bold;
+}
+
+.left-accordion .button {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: #fff;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    opacity: 1;
+}
+
+.left-accordion .button.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
