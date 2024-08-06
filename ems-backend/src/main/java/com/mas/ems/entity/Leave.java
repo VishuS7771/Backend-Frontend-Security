@@ -20,8 +20,8 @@ public class Leave {
     private Long leaveId;
 
     @ManyToOne
-    @JoinColumn(name = "empId")
-    private Employee employee;
+    @JoinColumn(name = "userId")
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "leaveTypeId")

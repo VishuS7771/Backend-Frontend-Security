@@ -12,12 +12,13 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
         const fetchClockStatus = async () => {
             try {
                 const response = await axiosInstance.get(`/attendance/clock-status/${userId}`);
-                const { isClockedIn, hasPunchedOutToday } = response.data;
-                setIsClockedIn(isClockedIn);
+                const { clockedIn, hasPunchedOutToday } = response.data; // Ensure these keys match your backend response
+                setIsClockedIn(clockedIn);
                 setHasPunchedOutToday(hasPunchedOutToday);
 
                 // Save to localStorage to persist state across page reloads
                 localStorage.setItem('hasPunchedOutToday', hasPunchedOutToday);
+                console.log('Clock status fetched:', response.data);
             } catch (error) {
                 console.error('Error fetching clock status:', error);
             }
@@ -31,26 +32,29 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
         const storedPunchOutStatus = localStorage.getItem('hasPunchedOutToday');
         if (storedPunchOutStatus !== null) {
             setHasPunchedOutToday(JSON.parse(storedPunchOutStatus));
+            console.log('Retrieved punch out status from localStorage:', JSON.parse(storedPunchOutStatus));
         }
     }, [userId]);
 
     const handlePunchInOut = async () => {
         if (hasPunchedOutToday) {
-            // Prevent action if the user has already punched out
+            console.log('Punch action prevented, already punched out today');
             return;
         }
-
+    
         try {
             if (isClockedIn) {
                 await axiosInstance.post(`/attendance/clockOut/${userId}`);
                 setIsClockedIn(false);
                 setHasPunchedOutToday(true);
                 localStorage.setItem('hasPunchedOutToday', true); // Update localStorage
+                console.log('Punched out successfully');
             } else {
                 await axiosInstance.post(`/attendance/clockIn/${userId}`);
                 setIsClockedIn(true);
                 setHasPunchedOutToday(false);
                 localStorage.setItem('hasPunchedOutToday', false); // Update localStorage
+                console.log('Punched in successfully');
             }
         } catch (error) {
             console.error('Error handling punch in/out:', error);
@@ -108,9 +112,10 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
             </div>
             <Link to="/employees" style={linkStyle}>Employees</Link>
             <Link to="/add-employee" style={linkStyle}>Add Employee</Link>
-            <Link to="/encrypt" style={linkStyle}>Encrypt Data</Link>
+            <Link to="/Attendance" style={linkStyle}>Attendance</Link>
             <Link to="/leave-request" style={linkStyle}>Leave Request</Link>
             <div style={linkStyle} onClick={handleLogout}>Logout</div>
+            <Link to="/encrypt" style={linkStyle}>Encrypt Data</Link>
         </div>
     );
 };

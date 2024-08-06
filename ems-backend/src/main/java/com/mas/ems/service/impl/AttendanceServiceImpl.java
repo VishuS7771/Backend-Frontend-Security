@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
 
@@ -26,49 +27,64 @@ public class AttendanceServiceImpl {
     private UserRepository userRepository;
 
     public Attendance clockIn(Long userId) throws ParseException {
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-mm-dd");
-        String date=simpleDateFormat.format(new Date());
-        Attendance attendance1=attendanceRepository.findByDateAndUserId(simpleDateFormat.parse(date),userId);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String formattedDate = simpleDateFormat.format(date);
+        Attendance attendance1=attendanceRepository.findByDateAndUserId(simpleDateFormat.parse(formattedDate),userId);
         if(attendance1==null) {
             User user = userRepository.findById(userId).get();
             Attendance attendance = new Attendance();
             attendance.setUser(user);
-            attendance.setDate(simpleDateFormat.parse(date));
+            attendance.setDate(simpleDateFormat.parse(formattedDate));
             attendance.setClockIn(LocalDateTime.now());
             return attendanceRepository.save(attendance);
         }
         return null;
     }
 
-    public Attendance clockOut(Long userId) {
-        Attendance attendance = attendanceRepository.findByUserId(userId);
+    public Attendance clockOut(Long userId) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String formattedDate = simpleDateFormat.format(date);
+        Attendance attendance=attendanceRepository.findByDateAndUserId(simpleDateFormat.parse(formattedDate),userId);
         attendance.setClockOut(LocalDateTime.now());
 
-        LocalDateTime clockInTime = attendance.getClockIn();
-        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between( attendance.getClockIn(), attendance.getClockOut());
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        long seconds = duration.getSeconds() % 60;
+        String formattedDuration = String.format("%d:%02d:%02d", hours, minutes, seconds);
 
-        Duration duration = Duration.between(clockInTime, now);
-        double v = duration.toHours() + (duration.toMinutes() % 60) / 60.0;
-        attendance.setTotalHours(String.valueOf(v));
+        attendance.setTotalHours(formattedDuration);
         return attendanceRepository.save(attendance);
     }
 
-//    public List<Attendance> getAttendanceByUser(Long empId) {
-//        return attendanceRepository.findByEmpId(empId);
-//    }
+    public List<Attendance> getAttendanceByUserAndMonth(Long userId, int year, int month) {
+         List<Attendance> attendances=attendanceRepository.findByUserIdAndMonth(userId, year, month);
+
+
+        return attendances;
+    }
 
     public ClockStatus isClockedIn(Long userId) throws ParseException {
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-mm-dd");
-        ClockStatus clockStatus=new ClockStatus();
-        String date=simpleDateFormat.format(new Date());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        ClockStatus clockStatus = new ClockStatus();
+        clockStatus.setClockedIn(false);
+        clockStatus.setHasPunchedOutToday(false);
+
+        String date = simpleDateFormat.format(new Date());
         Date parsedDate = simpleDateFormat.parse(date);
-        Attendance attendance=attendanceRepository.findByDateAndUserId(parsedDate,userId);
-        if(attendance==null){
-            clockStatus.setClockedIn(false);
+        Attendance attendance = attendanceRepository.findByDateAndUserId(parsedDate, userId);
+
+        if (attendance != null) {
             if (attendance.getClockOut() != null) {
                 clockStatus.setHasPunchedOutToday(true);
+            } else {
+                clockStatus.setClockedIn(true);
             }
         }
+
         return clockStatus;
     }
+
 }

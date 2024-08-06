@@ -2,7 +2,7 @@ package com.mas.ems.controller;
 
 import com.mas.ems.dto.LeaveDto;
 import com.mas.ems.entity.Leave;
-import com.mas.ems.service.LeaveServiceImpl;
+import com.mas.ems.service.impl.LeaveServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

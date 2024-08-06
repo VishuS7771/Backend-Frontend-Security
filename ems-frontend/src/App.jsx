@@ -12,6 +12,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthProvider from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LeaveRequestComponent from './components/LeaveRequestComponent';
+import AttendanceComponent from './components/AttendanceComponent';
 
 function App() {
     const contentStyle = {
@@ -67,6 +68,14 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <LeaveRequestComponent />
+                                </ProtectedRoute>
+                            }
+                        />
+                          <Route
+                            path='/Attendance'
+                            element={
+                                <ProtectedRoute>
+                                    <AttendanceComponent />
                                 </ProtectedRoute>
                             }
                         />

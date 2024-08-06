@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const LeaveRequestComponent = () => {
     const [leave, setLeave] = useState({
         leaveId: '',
-        userId: '',
+        userId: '', // Make sure to handle this correctly
         leaveTypeId: '',
         startDate: '',
         endDate: '',
@@ -20,22 +20,29 @@ const LeaveRequestComponent = () => {
     const navigate = useNavigate();
     
     useEffect(() => {
-        
-        axiosInstance.get('/leave/types') 
+        // Fetch leave types from the correct API endpoint
+        axiosInstance.get('/leaveType/leaveType') 
             .then(response => {
+                console.log(response);
                 setLeaveTypes(response.data);
             })
             .catch(error => {
                 console.error('Error fetching leave types:', error);
             });
 
-        axiosInstance.get(`/leave/user/${localStorage.getItem('userId')}`) 
-            .then(response => {
-                setAppliedLeaves(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching applied leaves:', error);
-            });
+        // Fetch applied leaves for the user
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            axiosInstance.get(`/leave/user/${userId}`) 
+                .then(response => {
+                    setAppliedLeaves(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching applied leaves:', error);
+                });
+        } else {
+            console.error('User ID not found in localStorage');
+        }
     }, []);
     
     const handleChange = (e) => {
@@ -49,15 +56,26 @@ const LeaveRequestComponent = () => {
     const applyLeave = (e) => {
         e.preventDefault();
 
-        if (validateForm()) {
-            axiosInstance.post('/leave/apply', leave)
-                .then(response => {
-                    alert('Leave applied successfully');
-                    navigate('/');
-                })
-                .catch(error => {
-                    console.error('Error applying leave:', error);
-                });
+        if (validateForm()) {debugger
+            const userId = localStorage.getItem('userId');
+            if (userId) {
+                const leaveWithUserId = {
+                    ...leave,
+                    userId: userId,
+                    totalLeave: calculateTotalLeave(leave.startDate, leave.endDate) // Calculate total leave
+                };
+                
+                axiosInstance.post('/leave/apply', leaveWithUserId)
+                    .then(response => {
+                        alert('Leave applied successfully');
+                        navigate('/leave-request');
+                    })
+                    .catch(error => {
+                        console.error('Error applying leave:', error);
+                    });
+            } else {
+                console.error('User ID not found in localStorage');
+            }
         }
     };
 
@@ -79,6 +97,20 @@ const LeaveRequestComponent = () => {
         return valid;
     };
 
+    const calculateTotalLeave = (startDate, endDate) => {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // Including start and end dates
+        return diffDays;
+    };
+
+    // Function to get leave type name from leaveTypes array
+    const getLeaveType = (leaveTypeId) => {debugger
+        const leaveType = leaveTypes.find(type => type.leaveTypeId === leaveTypeId);
+        return leaveType ? leaveType.leaveType : 'Unknown';
+    };
+
     return (
         <div className='container'>
             <h2 className='text-center'>Apply Leave</h2>
@@ -96,7 +128,7 @@ const LeaveRequestComponent = () => {
                                 <option value=''>--Select Leave Type--</option>
                                 {leaveTypes.map(type => (
                                     <option key={type.leaveTypeId} value={type.leaveTypeId}>
-                                        {type.leaveTypeName}
+                                        {type.leaveType}
                                     </option>
                                 ))}
                             </select>
@@ -126,7 +158,6 @@ const LeaveRequestComponent = () => {
                             />
                             {errors.endDate && <div className='invalid-feedback'>{errors.endDate}</div>}
                         </div>
-
                         <div className='form-group'>
                             <label>Remarks:</label>
                             <textarea
@@ -144,7 +175,7 @@ const LeaveRequestComponent = () => {
                     <table className='table'>
                         <thead>
                             <tr>
-                                <th>Leave ID</th>
+                                <th>Leave Id</th>
                                 <th>Leave Type</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -157,7 +188,7 @@ const LeaveRequestComponent = () => {
                             {appliedLeaves.map(leave => (
                                 <tr key={leave.leaveId}>
                                     <td>{leave.leaveId}</td>
-                                    <td>{leave.leaveTypeId}</td>
+                                    <td>{leave.leaveType.leaveType}</td>
                                     <td>{leave.startDate}</td>
                                     <td>{leave.endDate}</td>
                                     <td>{leave.totalLeave}</td>
