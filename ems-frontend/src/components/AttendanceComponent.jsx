@@ -3,7 +3,7 @@ import axiosInstance from '../services/axiosInstance';
 import { AuthContext } from '../context/AuthContext';
 
 const AttendanceComponent = () => {
-    const { userId } = useContext(AuthContext);
+    const { EmpId } = useContext(AuthContext);
     const [attendanceData, setAttendanceData] = useState([]);
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -15,7 +15,7 @@ const AttendanceComponent = () => {
         try {
             const year = month.getFullYear();
             const monthValue = String(month.getMonth() + 1).padStart(2, '0');
-            const response = await axiosInstance.get(`/attendance/getAttendance/${userId}`, {
+            const response = await axiosInstance.get(`/attendance/getAttendance/${EmpId}`, {
                 params: { year, month: monthValue }
             });
             setAttendanceData(response.data);

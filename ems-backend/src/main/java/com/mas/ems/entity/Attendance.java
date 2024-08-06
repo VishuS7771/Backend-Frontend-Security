@@ -21,8 +21,8 @@ public class Attendance {
     private Long attendanceId;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "empId")
+    private Employee employee;
 
     private LocalDateTime clockIn;
 

@@ -38,10 +38,10 @@ const ListEmployeeComponent = () => {
     <thead>
         <tr>
             <th>SR.No</th> {/* Auto-incrementing number column */} 
-            <th>Employee First Name</th>
+            <th>Employee  Name</th>
             <th>Employee Address</th>
-            <th>Employee Email Id</th>
-            <th>Employee Mobile No</th>
+            <th>Employee Email</th>
+            <th>Employee Mobile</th>
             <th>Actions</th>
         </tr>
     </thead>

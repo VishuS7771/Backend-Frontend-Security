@@ -107,6 +107,10 @@ useEffect(() => {
             } else {
                 createEmployee(employee).then((response) => {
                     console.log('Create response:', response.data);
+                    alert( "The employee has registered successfully on EMS.\n\n" +
+                "Username: " + response.data.email + "\n" +
+                "Password: " + response.data.password);
+
                     navigate('/employees');
                 }).catch(error => {
                     console.error('Error creating employee:', error);

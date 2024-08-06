@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 public class JwtAuthenticationResponse {
     private String accessToken;
     private String tokenType = "Bearer";
-    private long userId;
+    private long empId;
 
 
     public JwtAuthenticationResponse(String jwt) {
     }
 
-    public JwtAuthenticationResponse(String jwt, Long userId) {
+    public JwtAuthenticationResponse(String jwt, Long empId) {
     }
 }

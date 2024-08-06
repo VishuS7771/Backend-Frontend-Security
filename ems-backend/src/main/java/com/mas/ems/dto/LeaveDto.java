@@ -12,7 +12,7 @@ public class LeaveDto {
 
     private Long leaveId;
 
-    private long  userId;
+    private long  empId;
 
     private long leaveTypeId;
 

@@ -21,37 +21,37 @@ public class AttendanceController {
     @Autowired
     private AttendanceServiceImpl attendanceService;
 
-    @PostMapping("/clockIn/{userId}")
-    public ResponseEntity<Void> clockIn(@PathVariable Long userId) {
+    @PostMapping("/clockIn/{empId}")
+    public ResponseEntity<Void> clockIn(@PathVariable Long empId) {
         try {
-            attendanceService.clockIn(userId);
+            attendanceService.clockIn(empId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @PostMapping("/clockOut/{userId}")
-    public ResponseEntity<Void> clockOut(@PathVariable Long userId) {
+    @PostMapping("/clockOut/{empId}")
+    public ResponseEntity<Void> clockOut(@PathVariable Long empId) {
         try {
-            attendanceService.clockOut(userId);
+            attendanceService.clockOut(empId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    @GetMapping("/getAttendance/{userId}")
+    @GetMapping("/getAttendance/{empId}")
     public ResponseEntity<List<Attendance>> getAttendanceByUserAndMonth(
-            @PathVariable Long userId,
+            @PathVariable Long empId,
             @RequestParam int year,
             @RequestParam int month) {
-        List<Attendance> attendances = attendanceService.getAttendanceByUserAndMonth(userId, year, month);
+        List<Attendance> attendances = attendanceService.getAttendanceByUserAndMonth(empId, year, month);
         return ResponseEntity.ok(attendances);
     }
 
-    @GetMapping("/clock-status/{userId}")
-    public ResponseEntity<ClockStatus> getClockStatus(@PathVariable Long userId) throws ParseException {
-        ClockStatus clockStatus= attendanceService.isClockedIn(userId);
+    @GetMapping("/clock-status/{empId}")
+    public ResponseEntity<ClockStatus> getClockStatus(@PathVariable Long empId) throws ParseException {
+        ClockStatus clockStatus= attendanceService.isClockedIn(empId);
 
         return ResponseEntity.ok(clockStatus);
     }

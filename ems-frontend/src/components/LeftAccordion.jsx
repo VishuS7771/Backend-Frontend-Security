@@ -1,17 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../services/axiosInstance';
 
 const LeftAccordion = ({ isOpen, handleLogout }) => {
-    const { isAuthenticated, userId } = useContext(AuthContext);
+    const { isAuthenticated, EmpId } = useContext(AuthContext);
     const [isClockedIn, setIsClockedIn] = useState(false);
     const [hasPunchedOutToday, setHasPunchedOutToday] = useState(false);
 
     useEffect(() => {
         const fetchClockStatus = async () => {
             try {
-                const response = await axiosInstance.get(`/attendance/clock-status/${userId}`);
+                const response = await axiosInstance.get(`/attendance/clock-status/${EmpId}`);
                 const { clockedIn, hasPunchedOutToday } = response.data; // Ensure these keys match your backend response
                 setIsClockedIn(clockedIn);
                 setHasPunchedOutToday(hasPunchedOutToday);
@@ -24,7 +24,7 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
             }
         };
 
-        if (userId) {
+        if (EmpId) {
             fetchClockStatus();
         }
 
@@ -34,7 +34,7 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
             setHasPunchedOutToday(JSON.parse(storedPunchOutStatus));
             console.log('Retrieved punch out status from localStorage:', JSON.parse(storedPunchOutStatus));
         }
-    }, [userId]);
+    }, [EmpId]);
 
     const handlePunchInOut = async () => {
         if (hasPunchedOutToday) {
@@ -44,13 +44,13 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
     
         try {
             if (isClockedIn) {
-                await axiosInstance.post(`/attendance/clockOut/${userId}`);
+                await axiosInstance.post(`/attendance/clockOut/${EmpId}`);
                 setIsClockedIn(false);
                 setHasPunchedOutToday(true);
                 localStorage.setItem('hasPunchedOutToday', true); // Update localStorage
                 console.log('Punched out successfully');
             } else {
-                await axiosInstance.post(`/attendance/clockIn/${userId}`);
+                await axiosInstance.post(`/attendance/clockIn/${EmpId}`);
                 setIsClockedIn(true);
                 setHasPunchedOutToday(false);
                 localStorage.setItem('hasPunchedOutToday', false); // Update localStorage
@@ -87,6 +87,11 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
         backgroundColor: '#eaeaea',
     };
 
+    const activeLinkStyle = {
+        backgroundColor: '#ddd',
+        fontWeight: 'bold',
+    };
+
     const buttonStyle = {
         display: 'block',
         padding: '8px',
@@ -110,12 +115,12 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
             >
                 {isClockedIn ? 'Punch Out' : 'Punch In'}
             </div>
-            <Link to="/employees" style={linkStyle}>Employees</Link>
-            <Link to="/add-employee" style={linkStyle}>Add Employee</Link>
-            <Link to="/Attendance" style={linkStyle}>Attendance</Link>
-            <Link to="/leave-request" style={linkStyle}>Leave Request</Link>
+            <NavLink to="/employees" style={linkStyle} activeStyle={activeLinkStyle}>Employees</NavLink>
+            <NavLink to="/add-employee" style={linkStyle} activeStyle={activeLinkStyle}>Add Employee</NavLink>
+            <NavLink to="/Attendance" style={linkStyle} activeStyle={activeLinkStyle}>Attendance</NavLink>
+            <NavLink to="/leave-request" style={linkStyle} activeStyle={activeLinkStyle}>Leave Request</NavLink>
             <div style={linkStyle} onClick={handleLogout}>Logout</div>
-            <Link to="/encrypt" style={linkStyle}>Encrypt Data</Link>
+            <NavLink to="/encrypt" style={linkStyle} activeStyle={activeLinkStyle}>Encrypt Data</NavLink>
         </div>
     );
 };

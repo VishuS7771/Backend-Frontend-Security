@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const LeaveRequestComponent = () => {
     const [leave, setLeave] = useState({
         leaveId: '',
-        userId: '', // Make sure to handle this correctly
+        EmpId: '', // Make sure to handle this correctly
         leaveTypeId: '',
         startDate: '',
         endDate: '',
@@ -31,9 +31,9 @@ const LeaveRequestComponent = () => {
             });
 
         // Fetch applied leaves for the user
-        const userId = localStorage.getItem('userId');
-        if (userId) {
-            axiosInstance.get(`/leave/user/${userId}`) 
+        const EmpId = localStorage.getItem('EmpId');
+        if (EmpId) {
+            axiosInstance.get(`/leave/user/${EmpId}`) 
                 .then(response => {
                     setAppliedLeaves(response.data);
                 })
@@ -57,15 +57,15 @@ const LeaveRequestComponent = () => {
         e.preventDefault();
 
         if (validateForm()) {debugger
-            const userId = localStorage.getItem('userId');
-            if (userId) {
-                const leaveWithUserId = {
+            const EmpId = localStorage.getItem('EmpId');
+            if (EmpId) {
+                const leaveWithEmpId = {
                     ...leave,
-                    userId: userId,
+                    EmpId: EmpId,
                     totalLeave: calculateTotalLeave(leave.startDate, leave.endDate) // Calculate total leave
                 };
                 
-                axiosInstance.post('/leave/apply', leaveWithUserId)
+                axiosInstance.post('/leave/apply', leaveWithEmpId)
                     .then(response => {
                         alert('Leave applied successfully');
                         navigate('/leave-request');
@@ -106,7 +106,7 @@ const LeaveRequestComponent = () => {
     };
 
     // Function to get leave type name from leaveTypes array
-    const getLeaveType = (leaveTypeId) => {debugger
+    const getLeaveType = (leaveTypeId) => {
         const leaveType = leaveTypes.find(type => type.leaveTypeId === leaveTypeId);
         return leaveType ? leaveType.leaveType : 'Unknown';
     };

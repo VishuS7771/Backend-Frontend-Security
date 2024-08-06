@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 public class EmployeeMapper {
 
-    public static EmployeeDto mapToEmployeeDto(Employee employee) {
+    public static EmployeeDto mapToEmployeeDto(Employee employee ) {
         if (employee == null) {
             return null;
         }
@@ -40,6 +40,7 @@ public class EmployeeMapper {
         employeeDto.setManager(employee.getManager());
         employeeDto.setHrManager(employee.getHrManager());
         employeeDto.setPayrollManager(employee.getPayrollManager());
+
 
         return employeeDto;
     }

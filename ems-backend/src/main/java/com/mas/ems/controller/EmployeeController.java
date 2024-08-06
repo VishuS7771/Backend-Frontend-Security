@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.security.PublicKey;
 import java.text.ParseException;
 import java.util.List;
@@ -25,7 +26,7 @@ public class EmployeeController {
 
     // Build Add Employee REST API
     @PostMapping("/create")
-    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto)  {
+    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto) throws MessagingException {
         EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
 
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);

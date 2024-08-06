@@ -3,7 +3,9 @@ package com.mas.ems.controller;
 import com.mas.ems.component.JwtAuthenticationResponse;
 import com.mas.ems.component.JwtTokenProvider;
 import com.mas.ems.dto.UserDto;
+import com.mas.ems.entity.Employee;
 import com.mas.ems.entity.User;
+import com.mas.ems.repository.EmployeeRepository;
 import com.mas.ems.repository.UserRepository;
 import com.mas.ems.service.impl.TokenBlacklistService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,7 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserRepository userRepository;
+    private EmployeeRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -37,24 +39,24 @@ public class AuthenticationController {
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
-        if (userRepository.existsByUsername(userDto.getUsername())) {
-            return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
-        }
-
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-
-        user = userRepository.save(user);
-
-        return ResponseEntity.ok(user + "User registered successfully");
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
+//        if (userRepository.existsByUsername(userDto.getUsername())) {
+//            return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
+//        }
+//
+//        User user = new User();
+//        user.setUsername(userDto.getUsername());
+//        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+//
+//        user = userRepository.save(user);
+//
+//        return ResponseEntity.ok(user + "User registered successfully");
+//    }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody UserDto loginRequest) {
-        Optional<User> user =userRepository.findByUsername(loginRequest.getUsername());
+        Optional<Employee> user =userRepository.findByEmailId(loginRequest.getUsername());
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
                 loginRequest.getPassword()));
 
@@ -63,7 +65,7 @@ public class AuthenticationController {
         String jwt = tokenProvider.generateToken(authentication);
         JwtAuthenticationResponse jwtAuthenticationResponse=new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setAccessToken(jwt);
-        jwtAuthenticationResponse.setUserId(user.get().getUserId());
+        jwtAuthenticationResponse.setEmpId(user.get().getEmpId());
 
         return ResponseEntity.ok(jwtAuthenticationResponse);
     }

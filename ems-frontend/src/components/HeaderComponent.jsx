@@ -44,6 +44,7 @@ const HeaderComponent = () => {
         padding: '0.5rem 1rem',
         width: '100%',
         position: 'fixed',
+         height: '50px',
         top: 0,
         left: 0,
         zIndex: 1000,
@@ -80,9 +81,9 @@ const HeaderComponent = () => {
     return (
         <header style={headerStyle}>
             <div style={logoContainerStyle}>
-               {isAuthenticated && <button style={toggleButtonStyle} onClick={toggleAccordion}>
+               {/* {isAuthenticated && <button style={toggleButtonStyle} onClick={toggleAccordion}>
                     {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-                </button>}
+                </button>} */}
                 <div onClick={handleLogoClick} style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }}>
                     Employee Management System
                 </div>

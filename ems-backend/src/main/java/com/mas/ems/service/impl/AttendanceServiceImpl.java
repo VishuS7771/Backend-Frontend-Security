@@ -3,9 +3,8 @@ package com.mas.ems.service.impl;
 import com.mas.ems.dto.ClockStatus;
 import com.mas.ems.entity.Attendance;
 import com.mas.ems.entity.Employee;
-import com.mas.ems.entity.User;
 import com.mas.ems.repository.AttendanceRepository;
-import com.mas.ems.repository.UserRepository;
+import com.mas.ems.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.Date;
 import java.util.List;
 
@@ -24,17 +22,17 @@ public class AttendanceServiceImpl {
     private AttendanceRepository attendanceRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private EmployeeRepository employeeRepository;
 
-    public Attendance clockIn(Long userId) throws ParseException {
+    public Attendance clockIn(Long empId) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String formattedDate = simpleDateFormat.format(date);
-        Attendance attendance1=attendanceRepository.findByDateAndUserId(simpleDateFormat.parse(formattedDate),userId);
+        Attendance attendance1=attendanceRepository.findByDateAndUserId(simpleDateFormat.parse(formattedDate),empId);
         if(attendance1==null) {
-            User user = userRepository.findById(userId).get();
+            Employee employee = employeeRepository.findById(empId).get();
             Attendance attendance = new Attendance();
-            attendance.setUser(user);
+            attendance.setEmployee(employee);
             attendance.setDate(simpleDateFormat.parse(formattedDate));
             attendance.setClockIn(LocalDateTime.now());
             return attendanceRepository.save(attendance);
@@ -42,11 +40,11 @@ public class AttendanceServiceImpl {
         return null;
     }
 
-    public Attendance clockOut(Long userId) throws ParseException {
+    public Attendance clockOut(Long empId) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String formattedDate = simpleDateFormat.format(date);
-        Attendance attendance=attendanceRepository.findByDateAndUserId(simpleDateFormat.parse(formattedDate),userId);
+        Attendance attendance=attendanceRepository.findByDateAndUserId(simpleDateFormat.parse(formattedDate),empId);
         attendance.setClockOut(LocalDateTime.now());
 
         Duration duration = Duration.between( attendance.getClockIn(), attendance.getClockOut());
@@ -59,14 +57,12 @@ public class AttendanceServiceImpl {
         return attendanceRepository.save(attendance);
     }
 
-    public List<Attendance> getAttendanceByUserAndMonth(Long userId, int year, int month) {
-         List<Attendance> attendances=attendanceRepository.findByUserIdAndMonth(userId, year, month);
-
-
+    public List<Attendance> getAttendanceByUserAndMonth(Long empId, int year, int month) {
+         List<Attendance> attendances=attendanceRepository.findByEmpIddAndMonth(empId, year, month);
         return attendances;
     }
 
-    public ClockStatus isClockedIn(Long userId) throws ParseException {
+    public ClockStatus isClockedIn(Long empId) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         ClockStatus clockStatus = new ClockStatus();
         clockStatus.setClockedIn(false);
@@ -74,7 +70,7 @@ public class AttendanceServiceImpl {
 
         String date = simpleDateFormat.format(new Date());
         Date parsedDate = simpleDateFormat.parse(date);
-        Attendance attendance = attendanceRepository.findByDateAndUserId(parsedDate, userId);
+        Attendance attendance = attendanceRepository.findByDateAndUserId(parsedDate, empId);
 
         if (attendance != null) {
             if (attendance.getClockOut() != null) {

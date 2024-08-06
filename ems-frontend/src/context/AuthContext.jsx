@@ -8,16 +8,16 @@ const AuthProvider = ({ children }) => {
         return !!token;
     });
 
-    const [userId, setUserId] = useState(() => {
-        return localStorage.getItem('userId');
+    const [EmpId, setEmpId] = useState(() => {
+        return localStorage.getItem('EmpId');
     });
 
     useEffect(() => {
         const handleStorageChange = () => {
             const token = localStorage.getItem('token');
-            const storedUserId = localStorage.getItem('userId');
+            const storedEmpId = localStorage.getItem('EmpId');
             setIsAuthenticated(!!token);
-            setUserId(storedUserId);
+            setEmpId(storedEmpId);
         };
 
         window.addEventListener('storage', handleStorageChange);
@@ -27,22 +27,22 @@ const AuthProvider = ({ children }) => {
         };
     }, []);
 
-    const login = (token, userId) => {
+    const login = (token, EmpId) => {
         localStorage.setItem('token', token);
-        localStorage.setItem('userId', userId);
+        localStorage.setItem('EmpId', EmpId);
         setIsAuthenticated(true);
-        setUserId(userId);
+        setEmpId(EmpId);
     };
 
     const logout = () => {
         localStorage.removeItem('token');
-        localStorage.removeItem('userId');
+        localStorage.removeItem('EmpId');
         setIsAuthenticated(false);
-        setUserId(null);
+        setEmpId(null);
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, userId, login, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, EmpId, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

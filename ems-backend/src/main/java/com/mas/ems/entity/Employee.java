@@ -56,6 +56,8 @@ public class Employee {
 
     private String payrollManager;
 
+    private String password;
+
     public Employee(Long empId, String name, Designation designation, String email, String mobileNo, UserType userType, Department department, Object o, String  dateOfJoining, String  dateOfBirth, String currentAddress, String permanentAddress, String state, String branch, String product, String manager, String hrManager, String payrollManager) {
     }
 

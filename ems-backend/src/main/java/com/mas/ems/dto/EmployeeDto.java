@@ -46,4 +46,6 @@ public class EmployeeDto {
     private String hrManager;
 
     private String payrollManager;
+
+    private String password;
 }

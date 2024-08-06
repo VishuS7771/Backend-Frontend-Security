@@ -18,7 +18,7 @@ const FooterComponent = () => {
   return (
     <div>
       <footer style={footerStyle}>
-        <span>Test Project Of React Js</span>
+        <span>Demo Project Of React JS</span>
       </footer>
     </div>
   );
