@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface LeaveRepository extends JpaRepository<Leave, Long> {
 
-    @Query(value = "select * from appemployee.Tbl_leave where user_Id=:userId",nativeQuery = true)
-    List<Leave> findByUserId(@Param("userId") Long userId);
+    @Query(value = "select * from appemployee.Tbl_leave where emp_Id=:empId",nativeQuery = true)
+    List<Leave> findByEmpId(@Param("empId") Long empId);
 }

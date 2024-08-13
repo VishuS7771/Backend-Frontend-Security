@@ -1,15 +1,11 @@
 package com.mas.ems.service.impl;
 
 import com.mas.ems.dto.LeaveDto;
-import com.mas.ems.entity.Employee;
 import com.mas.ems.entity.Leave;
-import com.mas.ems.entity.LeaveType;
-
-import com.mas.ems.entity.User;
+import com.mas.ems.exception.ResourceNotFoundException;
 import com.mas.ems.repository.EmployeeRepository;
 import com.mas.ems.repository.LeaveRepository;
 import com.mas.ems.repository.LeaveTypeRepository;
-import com.mas.ems.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +26,9 @@ public class LeaveServiceImpl {
 
     public Leave applyLeave(LeaveDto leaveDto) {
         Leave leave = new Leave();
+        if(leaveDto.getLeaveId()!=null){
+            leave.setLeaveId(leaveDto.getLeaveId());
+        }
         leave.setEmployee(employeeRepository.findById(leaveDto.getEmpId()).get());
         leave.setStartDate(leaveDto.getStartDate());
         leave.setEndDate(leaveDto.getEndDate());
@@ -41,19 +40,33 @@ public class LeaveServiceImpl {
         return leaveRepository.save(leave);
     }
 
-    public List<Leave> getLeavesByUser(Long userId) {
-        return leaveRepository.findByUserId(userId);
+    public List<Leave> getLeavesByUser(Long empId) {
+        return leaveRepository.findByEmpId(empId);
     }
 
     public void approveLeave(Long leaveId) {
-        Leave leave =leaveRepository.findById(leaveId).get();
+        Leave leave =leaveRepository.findById(leaveId).orElseThrow(()-> new ResourceNotFoundException("leave not found with"+ leaveId ,"400"));
         leave.setStatus("Approved");
         leaveRepository.save(leave);
     }
 
     public void rejectLeave(Long leaveId) {
-        Leave leave =leaveRepository.findById(leaveId).get();
+        Leave leave =leaveRepository.findById(leaveId).orElseThrow(()-> new ResourceNotFoundException("leave not found with"+ leaveId ,"400"));
         leave.setStatus("Rejected");
         leaveRepository.save(leave);
+    }
+
+    public Leave getLeaveById(long leaveId) {
+        Leave leave =leaveRepository.findById(leaveId).orElseThrow(()-> new ResourceNotFoundException("leave not found with"+ leaveId ,"400"));
+        return leave;
+    }
+
+    public void deletleave(long leaveId){
+        Leave leave =leaveRepository.findById(leaveId).orElseThrow(()-> new ResourceNotFoundException("leave not found with"+ leaveId ,"400"));
+        leaveRepository.deleteById(leave.getLeaveId());
+    }
+
+    public List<Leave> getAllLeaves() {
+        return leaveRepository.findAll();
     }
 }

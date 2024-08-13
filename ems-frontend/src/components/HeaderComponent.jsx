@@ -1,13 +1,15 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa';
 import LeftAccordion from './LeftAccordion';
+import ProfileComponent from './ProfileComponent'; // Import the ProfileComponent
 import { AuthContext } from '../context/AuthContext';
 
 const HeaderComponent = () => {
-    const { isAuthenticated, logout } = useContext(AuthContext);
+    const { isAuthenticated } = useContext(AuthContext);
     const [isOpen, setIsOpen] = useState(true); 
     const [dateTime, setDateTime] = useState(new Date());
+    const [showProfilePopup, setShowProfilePopup] = useState(false); // State to manage profile popup visibility
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,13 +32,12 @@ const HeaderComponent = () => {
         }
     };
 
-    const handleLogout = () => {
-        logout();
-        navigate('/');
+    const handleProfileClick = () => {
+        setShowProfilePopup(true); // Show profile popup on click
     };
 
-    const toggleAccordion = () => {
-        setIsOpen(prevState => !prevState);
+    const handleClosePopup = () => {
+        setShowProfilePopup(false); // Close profile popup
     };
 
     const headerStyle = {
@@ -44,7 +45,7 @@ const HeaderComponent = () => {
         padding: '0.5rem 1rem',
         width: '100%',
         position: 'fixed',
-         height: '50px',
+        height: '50px',
         top: 0,
         left: 0,
         zIndex: 1000,
@@ -58,32 +59,19 @@ const HeaderComponent = () => {
         alignItems: 'center',
     };
 
-    const toggleButtonStyle = {
-        width: '40px',
-        height: '40px',
-        backgroundColor: 'rgb(3, 14, 3)', // same as header background
-        border: 'none',
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        cursor: 'pointer',
-        borderRadius: '4px',
-        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
-        zIndex: 1001, // Ensure it sits on top of other content
-    };
-
     const dateStyle = {
         color: 'white',
         marginRight: '1rem',
     };
 
+    const profileIconStyle = {
+        color: 'white',
+        cursor: 'pointer',
+    };
+
     return (
         <header style={headerStyle}>
             <div style={logoContainerStyle}>
-               {/* {isAuthenticated && <button style={toggleButtonStyle} onClick={toggleAccordion}>
-                    {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-                </button>} */}
                 <div onClick={handleLogoClick} style={{ color: 'white', textDecoration: 'none', cursor: 'pointer' }}>
                     Employee Management System
                 </div>
@@ -91,7 +79,11 @@ const HeaderComponent = () => {
             <div style={dateStyle}>
                 {formatDateTime(dateTime)}
             </div>
-            <LeftAccordion isOpen={isOpen} handleLogout={handleLogout} />
+            <div style={profileIconStyle} onClick={handleProfileClick}>
+                <FaUserCircle size={30} />
+            </div>
+            <LeftAccordion isOpen={isOpen} />
+            {showProfilePopup && <ProfileComponent onClose={handleClosePopup} />} {/* Render ProfileComponent as a popup */}
         </header>
     );
 };

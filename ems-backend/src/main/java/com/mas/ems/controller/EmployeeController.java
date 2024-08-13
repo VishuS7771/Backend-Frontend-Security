@@ -1,6 +1,7 @@
 package com.mas.ems.controller;
 
 import com.mas.ems.dto.EmployeeDto;
+import com.mas.ems.entity.Employee;
 import com.mas.ems.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,8 @@ public class EmployeeController {
 
     // Build Get Employee REST API
     @GetMapping("/getById/{id}")
-    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId) {
-        EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") Long employeeId) {
+        Employee employeeDto = employeeService.getEmployeeById(employeeId);
         return ResponseEntity.ok(employeeDto);
     }
 

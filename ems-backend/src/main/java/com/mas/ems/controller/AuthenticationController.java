@@ -66,6 +66,7 @@ public class AuthenticationController {
         JwtAuthenticationResponse jwtAuthenticationResponse=new JwtAuthenticationResponse();
         jwtAuthenticationResponse.setAccessToken(jwt);
         jwtAuthenticationResponse.setEmpId(user.get().getEmpId());
+        jwtAuthenticationResponse.setUserType(user.get().getUserType().getUserTypeId());
 
         return ResponseEntity.ok(jwtAuthenticationResponse);
     }

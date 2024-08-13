@@ -1,24 +1,22 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink,useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axiosInstance from '../services/axiosInstance';
 
-const LeftAccordion = ({ isOpen, handleLogout }) => {
-    const { isAuthenticated, EmpId } = useContext(AuthContext);
+const LeftAccordion = ({ isOpen }) => {
+    const { EmpId , isAuthenticated,logout } = useContext(AuthContext);
     const [isClockedIn, setIsClockedIn] = useState(false);
     const [hasPunchedOutToday, setHasPunchedOutToday] = useState(false);
-
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchClockStatus = async () => {
             try {
                 const response = await axiosInstance.get(`/attendance/clock-status/${EmpId}`);
-                const { clockedIn, hasPunchedOutToday } = response.data; // Ensure these keys match your backend response
+                const { clockedIn, hasPunchedOutToday } = response.data;
                 setIsClockedIn(clockedIn);
                 setHasPunchedOutToday(hasPunchedOutToday);
 
-                // Save to localStorage to persist state across page reloads
                 localStorage.setItem('hasPunchedOutToday', hasPunchedOutToday);
-                console.log('Clock status fetched:', response.data);
             } catch (error) {
                 console.error('Error fetching clock status:', error);
             }
@@ -28,33 +26,28 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
             fetchClockStatus();
         }
 
-        // Retrieve from localStorage on component mount
         const storedPunchOutStatus = localStorage.getItem('hasPunchedOutToday');
         if (storedPunchOutStatus !== null) {
             setHasPunchedOutToday(JSON.parse(storedPunchOutStatus));
-            console.log('Retrieved punch out status from localStorage:', JSON.parse(storedPunchOutStatus));
         }
     }, [EmpId]);
 
     const handlePunchInOut = async () => {
         if (hasPunchedOutToday) {
-            console.log('Punch action prevented, already punched out today');
             return;
         }
-    
+
         try {
             if (isClockedIn) {
                 await axiosInstance.post(`/attendance/clockOut/${EmpId}`);
                 setIsClockedIn(false);
                 setHasPunchedOutToday(true);
-                localStorage.setItem('hasPunchedOutToday', true); // Update localStorage
-                console.log('Punched out successfully');
+                localStorage.setItem('hasPunchedOutToday', true);
             } else {
                 await axiosInstance.post(`/attendance/clockIn/${EmpId}`);
                 setIsClockedIn(true);
                 setHasPunchedOutToday(false);
-                localStorage.setItem('hasPunchedOutToday', false); // Update localStorage
-                console.log('Punched in successfully');
+                localStorage.setItem('hasPunchedOutToday', false);
             }
         } catch (error) {
             console.error('Error handling punch in/out:', error);
@@ -66,7 +59,7 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
     const accordionStyle = {
         width: isOpen ? '250px' : '0',
         position: 'fixed',
-        top: '60px', 
+        top: '50px',
         left: 0,
         height: 'calc(100% - 60px)',
         backgroundColor: '#f4f4f4',
@@ -74,7 +67,7 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
         borderRight: '1px solid #ddd',
         overflowY: 'auto',
         transition: 'width 0.3s, padding 0.3s',
-        zIndex: 1000, 
+        zIndex: 1000,
     };
 
     const linkStyle = {
@@ -105,6 +98,20 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
         fontSize: '14px',
         opacity: hasPunchedOutToday ? '0.6' : '1',
     };
+    const handleLogout = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (token) {
+                await axiosInstance.post('/auth/logout', {}, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                logout();
+                navigate('/');
+            }
+        } catch (error) {
+            console.error('Error logging out', error);
+        }
+    };
 
     return (
         <div style={accordionStyle}>
@@ -119,7 +126,8 @@ const LeftAccordion = ({ isOpen, handleLogout }) => {
             <NavLink to="/add-employee" style={linkStyle} activeStyle={activeLinkStyle}>Add Employee</NavLink>
             <NavLink to="/Attendance" style={linkStyle} activeStyle={activeLinkStyle}>Attendance</NavLink>
             <NavLink to="/leave-request" style={linkStyle} activeStyle={activeLinkStyle}>Leave Request</NavLink>
-            <div style={linkStyle} onClick={handleLogout}>Logout</div>
+            <NavLink to="/Applied-request" style={linkStyle} activeStyle={activeLinkStyle}>Applied Leaves</NavLink>
+            <NavLink style={linkStyle} onClick={handleLogout}>Logout</NavLink>
             <NavLink to="/encrypt" style={linkStyle} activeStyle={activeLinkStyle}>Encrypt Data</NavLink>
         </div>
     );

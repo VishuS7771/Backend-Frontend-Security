@@ -11,8 +11,12 @@ import LeftAccordion from './components/LeftAccordion';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthProvider from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import LeaveRequestComponent from './components/LeaveRequestComponent';
 import AttendanceComponent from './components/AttendanceComponent';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ApplyLeaveComponent from './components/ApplyLeaveComponent';
+import PreviouslyAppliedLeavesComponent from './components/PreviouslyAppliedLeavesComponent';
+import ProfileComponent from './components/ProfileComponent';
+import LogoutComponent from './components/LogoutComponent';
 
 function App() {
     const contentStyle = {
@@ -30,6 +34,7 @@ function App() {
                     <Routes>
                         <Route path='/' element={<Navigate to="/login" />} />
                         <Route path='/login' element={<LoginComponent />} />
+                        <Route path='/logout' element={<LogoutComponent />} />
                         <Route path='/register' element={<RegisterComponent />} />
                         <Route 
                             path='/employees' 
@@ -67,7 +72,15 @@ function App() {
                             path='/leave-request'
                             element={
                                 <ProtectedRoute>
-                                    <LeaveRequestComponent />
+                                    <ApplyLeaveComponent />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path='/Applied-request'
+                            element={
+                                <ProtectedRoute>
+                                    <PreviouslyAppliedLeavesComponent />
                                 </ProtectedRoute>
                             }
                         />
@@ -76,6 +89,14 @@ function App() {
                             element={
                                 <ProtectedRoute>
                                     <AttendanceComponent />
+                                </ProtectedRoute>
+                            }
+                        />
+                          <Route
+                            path='/profile'
+                            element={
+                                <ProtectedRoute>
+                                    <ProfileComponent />
                                 </ProtectedRoute>
                             }
                         />

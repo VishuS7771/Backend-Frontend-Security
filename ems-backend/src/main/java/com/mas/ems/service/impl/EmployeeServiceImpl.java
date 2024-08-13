@@ -11,10 +11,7 @@ import com.mas.ems.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import javax.mail.MessagingException;
-import javax.transaction.Transactional;
-import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,32 +28,36 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private MailConfig mailConfig;
 
+    @Autowired
+    private EmployeeMapper employeeMapper;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) throws MessagingException {
 
-        Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
-        String password=generatePassword();
+        Employee employee = employeeMapper.mapToEmployee(employeeDto);
+        String password = "";
+
+       password=generatePassword();
         employee.setPassword(passwordEncoder.encode(password));
         Employee savedEmployee = employeeRepository.save(employee);
        // mailConfig.sendSimpleMessage(savedEmployee.getEmail(),savedEmployee.getEmail(),password);
-        EmployeeDto employeeDto1=EmployeeMapper.mapToEmployeeDto(savedEmployee );
+        EmployeeDto employeeDto1=employeeMapper.mapToEmployeeDto(savedEmployee );
         employeeDto1.setPassword(password);
         return employeeDto1;
     }
 
     @Override
-    public EmployeeDto getEmployeeById(Long employeeId) {
+    public Employee getEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(()
                 -> new ResourceNotFoundException("Employee is not exists with given id : " + employeeId,"200"));
 
-        return EmployeeMapper.mapToEmployeeDto(employee);
+        return employee;
     }
 
     @Override
     public List<EmployeeDto> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
-        return employees.stream().map(EmployeeMapper::mapToEmployeeDto).collect(Collectors.toList());
+        return employees.stream().map(employeeMapper::mapToEmployeeDto).collect(Collectors.toList());
     }
 
     @Override
@@ -65,10 +66,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(()
                 -> new ResourceNotFoundException("Employee is not exists with given id: " + employeeId,"400"));
 
-         employee = EmployeeMapper.mapToEmployee(updatedEmployee);
+         employee = employeeMapper.mapToEmployee(updatedEmployee);
         Employee updatedEmployeeObj = employeeRepository.save(employee);
 
-        return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);
+        return employeeMapper.mapToEmployeeDto(updatedEmployeeObj);
     }
 
     @Override

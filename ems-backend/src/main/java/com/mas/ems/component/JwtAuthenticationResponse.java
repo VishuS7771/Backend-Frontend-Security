@@ -14,6 +14,8 @@ public class JwtAuthenticationResponse {
     private String tokenType = "Bearer";
     private long empId;
 
+    private long userType;
+
 
     public JwtAuthenticationResponse(String jwt) {
     }

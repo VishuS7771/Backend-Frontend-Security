@@ -74,7 +74,7 @@ const LoginComponent = () => {
                         required
                     />
                     <button type='submit' style={buttonStyle}>Login</button>
-                    <Link to='/register' style={linkStyle}>Sign Up</Link>
+                    {/* <Link to='/register' style={linkStyle}>Sign Up</Link> */}
                 </form>
             </div>
         </div>

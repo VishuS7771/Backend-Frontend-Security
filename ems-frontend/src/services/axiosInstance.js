@@ -15,21 +15,21 @@ axiosInstance.interceptors.request.use(
         }
         return config;
     },
-    (error) => {
+    (error) => {       
         return Promise.reject(error);
     }
 );
 
 
-axiosInstance.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response && error.response.status === 401) {
+// axiosInstance.interceptors.response.use(
+//     (response) => response,
+//     (error) => {debugger
+//         if (error.response && error.response.status === 401) {
            
-            window.location.href = '/unauthorized'; 
-        }
-        return Promise.reject(error);
-    }
-);
+//             window.location.href = '/unauthorized'; 
+//         }
+//         return Promise.reject(error);
+//     }
+// );
 
 export default axiosInstance;

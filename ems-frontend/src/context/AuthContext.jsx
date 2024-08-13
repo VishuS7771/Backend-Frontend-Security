@@ -27,9 +27,10 @@ const AuthProvider = ({ children }) => {
         };
     }, []);
 
-    const login = (token, EmpId) => {
+    const login = (token, EmpId,userType) => {
         localStorage.setItem('token', token);
         localStorage.setItem('EmpId', EmpId);
+        localStorage.setItem('userType', userType);
         setIsAuthenticated(true);
         setEmpId(EmpId);
     };

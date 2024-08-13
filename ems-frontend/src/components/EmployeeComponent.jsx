@@ -3,7 +3,6 @@ import { createEmployee, getEmployee, updateEmployee } from '../services/Employe
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../services/axiosInstance';
 
-
 const EmployeeComponent = () => {
     const [employee, setEmployee] = useState({
         empId: '',
@@ -34,7 +33,6 @@ const EmployeeComponent = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
- 
     useEffect(() => {
         axiosInstance.get('/department/getAll')
             .then(response => {
@@ -42,6 +40,14 @@ const EmployeeComponent = () => {
             })
             .catch(error => {
                 console.error('Error fetching departments:', error);
+            });
+
+        axiosInstance.get('/usertype/getall')
+            .then(response => {
+                setUserTypes(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching user types:', error);
             });
 
         if (id) {
@@ -55,25 +61,11 @@ const EmployeeComponent = () => {
                 console.error('Error fetching employee:', error);
             });
         }
-    }, [id]
-
-);
-useEffect(() => {
-    axiosInstance.get('/usertype/getall')
-        .then(response => {
-            console.log(response);
-            setUserTypes(response.data);
-        })
-        .catch(error => {
-            console.error('Error fetching user types:', error);
-        });
-}, []);
-
+    }, [id]);
 
     const fetchDesignations = (departmentId) => {
         axiosInstance.get(`/designation/getdeslist/${departmentId}`)
             .then(response => {
-                console.log(response);
                 setDesignations(response.data);
             })
             .catch(error => {
@@ -87,10 +79,10 @@ useEffect(() => {
             ...prevState,
             [name]: value
         }));
+
         if (name === 'departmentId') {
             fetchDesignations(value);
         }
-        setSelectedUserType(e.target.value);
     };
 
     const saveOrUpdateEmployee = (e) => {
@@ -99,17 +91,15 @@ useEffect(() => {
         if (validateForm()) {
             if (id) {
                 updateEmployee(id, employee).then((response) => {
-                    console.log('Update response:', response.data);
                     navigate('/employees');
                 }).catch(error => {
                     console.error('Error updating employee:', error);
                 });
             } else {
                 createEmployee(employee).then((response) => {
-                    console.log('Create response:', response.data);
-                    alert( "The employee has registered successfully on EMS.\n\n" +
-                "Username: " + response.data.email + "\n" +
-                "Password: " + response.data.password);
+                    alert("The employee has registered successfully on EMS.\n\n" +
+                        "Username: " + response.data.email + "\n" +
+                        "Password: " + response.data.password);
 
                     navigate('/employees');
                 }).catch(error => {
@@ -123,7 +113,6 @@ useEffect(() => {
         let valid = true;
         const errorsCopy = {};
 
-      
         if (/^[a-zA-Z\s]+$/.test(employee.name.trim())) {
             errorsCopy.name = '';
         } else {
@@ -131,7 +120,6 @@ useEffect(() => {
             valid = false;
         }
 
-      
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (emailRegex.test(employee.email.trim())) {
             errorsCopy.email = '';
@@ -140,7 +128,6 @@ useEffect(() => {
             valid = false;
         }
 
-      
         const mobileNoRegex = /^\d{10}$/;
         if (mobileNoRegex.test(employee.mobileNo.trim())) {
             errorsCopy.mobileNo = '';
@@ -148,8 +135,6 @@ useEffect(() => {
             errorsCopy.mobileNo = 'Mobile No must be 10 digits long and contain only numbers';
             valid = false;
         }
-
-     
 
         setErrors(errorsCopy);
         return valid;
@@ -218,7 +203,7 @@ useEffect(() => {
                                         <label className='form-label'>Department:</label>
                                         <select
                                             name='departmentId'
-                                            value={employee.departmentId}
+                                            value={employee.departmentId || ''}
                                             className='form-control'
                                             onChange={handleChange}
                                         >
@@ -238,7 +223,7 @@ useEffect(() => {
                                         <label className='form-label'>Designation:</label>
                                         <select
                                             name='designationId'
-                                            value={employee.designationId}
+                                            value={employee.designationId || ''}
                                             className='form-control'
                                             onChange={handleChange}
                                         >
@@ -251,13 +236,12 @@ useEffect(() => {
                                         </select>
                                     </div>
                                 </div>
-                             
                                 <div className='col-md-6'>
                                     <div className='form-group'>
                                         <label className='form-label'>User Type:</label>
                                         <select
                                             name='userTypeId'
-                                            value={employee.userTypeId}
+                                            value={employee.userTypeId || ''}
                                             className='form-control'
                                             onChange={handleChange}
                                         >
@@ -269,8 +253,7 @@ useEffect(() => {
                                             ))}
                                         </select>
                                     </div>
-                                
-                            </div>
+                                </div>
                             </div>
 
                             <div className='row mb-2'>
@@ -388,7 +371,6 @@ useEffect(() => {
                             </div>
 
                             <div className='row mb-2'>
-                               
                                 <div className='col-md-6'>
                                     <div className='form-group'>
                                         <label className='form-label'>HR Manager:</label>

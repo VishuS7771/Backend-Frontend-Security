@@ -16,7 +16,7 @@ public class LeaveTypeController {
     @Autowired
     private LeaveTypeServiceImpl leaveTypeService;
 
-    @GetMapping("/leaveType")
+    @GetMapping("/gettypes")
     public List<LeaveType> getAllLeaveType(){
         return leaveTypeService.getAllLeaves();
     }

@@ -1,22 +1,30 @@
 package com.mas.ems.mapper;
 
-import com.mas.ems.entity.Department;
+
 import com.mas.ems.entity.Designation;
 import com.mas.ems.entity.Employee;
 import com.mas.ems.dto.EmployeeDto;
-import com.mas.ems.entity.UserType;
+import com.mas.ems.exception.ResourceNotFoundException;
 import com.mas.ems.repository.DepartmentRepo;
 import com.mas.ems.repository.DesignationRepository;
 import com.mas.ems.repository.UserTypeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 
+@Configuration
 public class EmployeeMapper {
 
-    public static EmployeeDto mapToEmployeeDto(Employee employee ) {
+    @Autowired
+    private  DesignationRepository designationRepository;
+
+    @Autowired
+    private  DepartmentRepo departmentRepo;
+
+    @Autowired
+    private  UserTypeRepo userTypeRepo;
+
+    public  EmployeeDto mapToEmployeeDto(Employee employee ) {
         if (employee == null) {
             return null;
         }
@@ -45,28 +53,20 @@ public class EmployeeMapper {
         return employeeDto;
     }
 
-    public static Employee mapToEmployee(EmployeeDto employeeDto) {
+    public  Employee mapToEmployee(EmployeeDto employeeDto) {
         if (employeeDto == null) {
             return null;
         }
 
-        Designation designation = new Designation();
-        designation.setDesignationId(employeeDto.getDesignationId());
-
-        Department department = new Department();
-        department.setDepartmentId(employeeDto.getDepartmentId());
-
-        UserType userType = new UserType();
-        userType.setUserTypeId(employeeDto.getUserTypeId());
-
         Employee employee = new Employee();
         employee.setEmpId(employeeDto.getEmpId());
         employee.setName(employeeDto.getName());
-        employee.setDesignation(designation);
+        Designation designation1=designationRepository.findById(employeeDto.getDesignationId()).orElseThrow(() ->new ResourceNotFoundException("Designation mot found with designationId"+employeeDto.getDesignationId(),"404"));
+        employee.setDesignation(designation1);
         employee.setEmail(employeeDto.getEmail());
         employee.setMobileNo(employeeDto.getMobileNo());
-        employee.setUserType(userType);
-        employee.setDepartment(department);
+        employee.setUserType(userTypeRepo.findById(employeeDto.getUserTypeId()).orElseThrow(() ->new ResourceNotFoundException("usertype mot found with userTypeId"+employeeDto.getUserTypeId(),"404")));
+        employee.setDepartment(departmentRepo.findById(employeeDto.getDepartmentId()).orElseThrow(() ->new ResourceNotFoundException("department mot found with departmentId"+employeeDto.getDepartmentId(),"404")));
         employee.setDateOfJoining(employeeDto.getDateOfJoining());
         employee.setDateOfBirth(employeeDto.getDateOfBirth());
         employee.setCurrentAddress(employeeDto.getCurrentAddress());
