@@ -37,7 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeMapper.mapToEmployee(employeeDto);
         String password = "";
 
-       password=generatePassword();
+        password=generatePassword();
         employee.setPassword(passwordEncoder.encode(password));
         Employee savedEmployee = employeeRepository.save(employee);
        // mailConfig.sendSimpleMessage(savedEmployee.getEmail(),savedEmployee.getEmail(),password);
@@ -49,7 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee getEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(()
-                -> new ResourceNotFoundException("Employee is not exists with given id : " + employeeId,"200"));
+                -> new ResourceNotFoundException("Employee is not exists with given id : " + employeeId,"400"));
 
         return employee;
     }
@@ -63,10 +63,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
 
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(()
-                -> new ResourceNotFoundException("Employee is not exists with given id: " + employeeId,"400"));
+       employeeRepository.findById(employeeId).orElseThrow(()
+                -> new ResourceNotFoundException("Employee is not exists with given id : " + employeeId,"400"));
 
-         employee = employeeMapper.mapToEmployee(updatedEmployee);
+
+        Employee employee = employeeMapper.mapToEmployee(updatedEmployee);
         Employee updatedEmployeeObj = employeeRepository.save(employee);
 
         return employeeMapper.mapToEmployeeDto(updatedEmployeeObj);

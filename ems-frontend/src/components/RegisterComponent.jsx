@@ -64,14 +64,14 @@ const RegisterComponent = () => {
         try {
             await registerUser({ username, password });
             alert('Registration successful! Please log in.');
-            navigate('/'); // Navigate to login page after successful registration
+            navigate('/'); 
         } catch (error) {
             console.error('Registration failed', error);
             alert('Registration failed. Please try again.');
         }
     };
 
-    // Inline styles
+    
     const containerStyle = {
         padding: '20px',
         maxWidth: '400px',

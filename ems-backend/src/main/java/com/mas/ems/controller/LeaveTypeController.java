@@ -1,6 +1,7 @@
 package com.mas.ems.controller;
 
 import com.mas.ems.entity.LeaveType;
+import com.mas.ems.service.LeaveTypeService;
 import com.mas.ems.service.impl.LeaveTypeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,11 @@ import java.util.List;
 public class LeaveTypeController {
 
     @Autowired
-    private LeaveTypeServiceImpl leaveTypeService;
+    private LeaveTypeService leaveTypeService;
+
+    public LeaveTypeController(LeaveTypeServiceImpl leaveTypeService) {
+        this.leaveTypeService = leaveTypeService;
+    }
 
     @GetMapping("/gettypes")
     public List<LeaveType> getAllLeaveType(){

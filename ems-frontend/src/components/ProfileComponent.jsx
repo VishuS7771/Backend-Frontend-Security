@@ -6,11 +6,11 @@ const ProfileComponent = ({ onClose }) => {
 
     useEffect(() => {
         const fetchProfileData = async () => {
-            const empId = localStorage.getItem('EmpId'); // Assuming empId is stored in localStorage
-            console.log("Fetching profile data for empId:", empId); // Debugging log
+            const empId = localStorage.getItem('EmpId');
+            console.log("Fetching profile data for empId:", empId); 
             try {
                 const response = await axiosInstance.get(`/employees/getById/${empId}`);
-                console.log("Profile data fetched:", response.data); // Debugging log
+                console.log("Profile data fetched:", response.data); 
                 setProfileData(response.data);
             } catch (error) {
                 console.error('Error fetching profile data:', error);
@@ -32,7 +32,7 @@ const ProfileComponent = ({ onClose }) => {
         zIndex: 1003,
         width: '600px',
         maxHeight: '80vh',
-        overflowY: 'auto',  // Scroll if content is too long
+        overflowY: 'auto',  
         fontFamily: 'Arial, sans-serif',
     };
 

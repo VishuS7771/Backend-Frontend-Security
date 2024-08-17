@@ -2,7 +2,7 @@ package com.mas.ems.controller;
 
 
 import com.mas.ems.entity.UserType;
-import com.mas.ems.service.impl.UserTypeServiceImpl;
+import com.mas.ems.service.UserTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ import java.util.List;
 public class UserTypeController {
 
     @Autowired
-    private UserTypeServiceImpl userTypeService;
+    private UserTypeService userTypeService;
 
     @GetMapping("/getall")
     public List<UserType> getUserType(){

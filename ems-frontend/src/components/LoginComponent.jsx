@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/AuthService';
 import { AuthContext } from '../context/AuthContext';
 
@@ -13,68 +12,47 @@ const LoginComponent = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const token = await loginUser({ username, password, login });
-            navigate('/employees'); 
+            await loginUser({ username, password, login });
+            navigate('/employees');
         } catch (error) {
             alert('Login failed, Please try again.');
             console.error('Login failed', error);
         }
     };
 
-    const containerStyle = {
-        display: 'flex',
-        justifyContent: 'center',
-        padding: '20px',
-        textAlign: 'center',
-    };
-
-    const formWrapperStyle = {
-        width: '100%',
-        maxWidth: '400px',
-    };
-
-    const formStyle = {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-    };
-
-    const buttonStyle = {
-        backgroundColor: '#007bff',
-        color: 'white',
-        padding: '10px',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-    };
-
-    const linkStyle = {
-        marginTop: '10px',
-        color: '#007bff',
-        textDecoration: 'none',
-    };
-
     return (
-        <div style={containerStyle}>
-            <div style={formWrapperStyle}>
-                <h2>Login</h2>
-                <form style={formStyle} onSubmit={handleLogin}>
-                    <input
-                        type='text'
-                        placeholder='Username'
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                    <input
-                        type='password'
-                        placeholder='Password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <button type='submit' style={buttonStyle}>Login</button>
-                    {/* <Link to='/register' style={linkStyle}>Sign Up</Link> */}
+        <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+            <div className="card p-4 shadow-lg" style={{ width: '100%', maxWidth: '400px' }}>
+                <h2 className="text-center mb-4">Login</h2>
+                <form onSubmit={handleLogin}>
+                    <div className="form-group mb-3">
+                        <label htmlFor="username">Username</label>
+                        <input
+                            type="text"
+                            id="username"
+                            className="form-control"
+                            placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="form-group mb-3">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            className="form-control"
+                            placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary btn-block">
+                        Login
+                    </button>
+                    {/* <Link to='/register' className='btn btn-link mt-3 d-block text-center'>Sign Up</Link> */}
                 </form>
             </div>
         </div>

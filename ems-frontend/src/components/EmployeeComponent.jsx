@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createEmployee, getEmployee, updateEmployee } from '../services/EmployeeService';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../services/axiosInstance';
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const EmployeeComponent = () => {
     const [employee, setEmployee] = useState({
@@ -29,7 +30,7 @@ const EmployeeComponent = () => {
     const [designations, setDesignations] = useState([]);
     const [errors, setErrors] = useState({});
     const [userTypes, setUserTypes] = useState([]);
-    
+
     const { id } = useParams();
     const navigate = useNavigate();
 
@@ -97,10 +98,7 @@ const EmployeeComponent = () => {
                 });
             } else {
                 createEmployee(employee).then((response) => {
-                    alert("The employee has registered successfully on EMS.\n\n" +
-                        "Username: " + response.data.email + "\n" +
-                        "Password: " + response.data.password);
-
+                    alert(`The employee has registered successfully on EMS.\n\nUsername: ${response.data.email}\nPassword: ${response.data.password}`);
                     navigate('/employees');
                 }).catch(error => {
                     console.error('Error creating employee:', error);
@@ -145,264 +143,264 @@ const EmployeeComponent = () => {
     };
 
     return (
-        <div className='container'>
-            <br /> <br />
-            <div className='row'>
-                <div className='card col-md-8 offset-md-2'>
+        <div className='container mt-5'>
+            <div className='card'>
+                <div className='card-body'>
                     {pageTitle()}
-                    <div className='card-body'>
-                        <form>
-                            <div className='row mb-2'>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Name:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Employee Name'
-                                            name='name'
-                                            value={employee.name}
-                                            className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                                            onChange={handleChange}
-                                        />
-                                        {errors.name && <div className='invalid-feedback'>{errors.name}</div>}
-                                    </div>
-                                </div>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Email:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Employee Email'
-                                            name='email'
-                                            value={employee.email}
-                                            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                                            onChange={handleChange}
-                                        />
-                                        {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
-                                    </div>
+                    <form onSubmit={saveOrUpdateEmployee}>
+                        <div className='row mb-3'>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Name:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter Employee Name'
+                                        name='name'
+                                        value={employee.name}
+                                        className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+                                        onChange={handleChange}
+                                    />
+                                    {errors.name && <div className='invalid-feedback'>{errors.name}</div>}
                                 </div>
                             </div>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Email:</label>
+                                    <input
+                                        type='email'
+                                        placeholder='Enter Employee Email'
+                                        name='email'
+                                        value={employee.email}
+                                        className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                                        onChange={handleChange}
+                                    />
+                                    {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
+                                </div>
+                            </div>
+                        </div>
 
-                            <div className='row mb-2'>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Mobile No:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Employee Mobile No'
-                                            name='mobileNo'
-                                            value={employee.mobileNo}
-                                            className={`form-control ${errors.mobileNo ? 'is-invalid' : ''}`}
-                                            onChange={handleChange}
-                                        />
-                                        {errors.mobileNo && <div className='invalid-feedback'>{errors.mobileNo}</div>}
-                                    </div>
-                                </div>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Department:</label>
-                                        <select
-                                            name='departmentId'
-                                            value={employee.departmentId || ''}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        >
-                                            <option value=''>--Select Department--</option>
-                                            {departments.map(dept => (
-                                                <option key={dept.departmentId} value={dept.departmentId}>
-                                                    {dept.departmentName}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                        <div className='row mb-3'>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Mobile No:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter Employee Mobile No'
+                                        name='mobileNo'
+                                        value={employee.mobileNo}
+                                        className={`form-control ${errors.mobileNo ? 'is-invalid' : ''}`}
+                                        onChange={handleChange}
+                                    />
+                                    {errors.mobileNo && <div className='invalid-feedback'>{errors.mobileNo}</div>}
                                 </div>
                             </div>
-                            <div className='row mb-2'>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Designation:</label>
-                                        <select
-                                            name='designationId'
-                                            value={employee.designationId || ''}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        >
-                                            <option value=''>--Select Designation--</option>
-                                            {designations.map(desig => (
-                                                <option key={desig.designationId} value={desig.designationId}>
-                                                    {desig.designationName}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>User Type:</label>
-                                        <select
-                                            name='userTypeId'
-                                            value={employee.userTypeId || ''}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        >
-                                            <option value=''>--Select User Type--</option>
-                                            {userTypes.map(userType => (
-                                                <option key={userType.userTypeId} value={userType.userTypeId}>
-                                                    {userType.userType}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Department:</label>
+                                    <select
+                                        name='departmentId'
+                                        value={employee.departmentId || ''}
+                                        className='form-select'
+                                        onChange={handleChange}
+                                    >
+                                        <option value=''>--Select Department--</option>
+                                        {departments.map(dept => (
+                                            <option key={dept.departmentId} value={dept.departmentId}>
+                                                {dept.departmentName}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className='row mb-2'>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Current Address:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Current Address'
-                                            name='currentAddress'
-                                            value={employee.currentAddress}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Permanent Address:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Permanent Address'
-                                            name='permanentAddress'
-                                            value={employee.permanentAddress}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                        <div className='row mb-3'>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Designation:</label>
+                                    <select
+                                        name='designationId'
+                                        value={employee.designationId || ''}
+                                        className='form-select'
+                                        onChange={handleChange}
+                                    >
+                                        <option value=''>--Select Designation--</option>
+                                        {designations.map(desig => (
+                                            <option key={desig.designationId} value={desig.designationId}>
+                                                {desig.designationName}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
-
-                            <div className='row mb-2'>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Date of Joining:</label>
-                                        <input
-                                            type='date'
-                                            name='dateOfJoining'
-                                            value={employee.dateOfJoining}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Date of Birth:</label>
-                                        <input
-                                            type='date'
-                                            name='dateOfBirth'
-                                            value={employee.dateOfBirth}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>User Type:</label>
+                                    <select
+                                        name='userTypeId'
+                                        value={employee.userTypeId || ''}
+                                        className='form-select'
+                                        onChange={handleChange}
+                                    >
+                                        <option value=''>--Select User Type--</option>
+                                        {userTypes.map(userType => (
+                                            <option key={userType.userTypeId} value={userType.userTypeId}>
+                                                {userType.userType}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className='row mb-2'>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>State:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter State'
-                                            name='state'
-                                            value={employee.state}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Branch:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Branch'
-                                            name='branch'
-                                            value={employee.branch}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                        <div className='row mb-3'>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Current Address:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter Current Address'
+                                        name='currentAddress'
+                                        value={employee.currentAddress}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
                                 </div>
                             </div>
-
-                            <div className='row mb-2'>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Product:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Product'
-                                            name='product'
-                                            value={employee.product}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Manager:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Manager'
-                                            name='manager'
-                                            value={employee.manager}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Permanent Address:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter Permanent Address'
+                                        name='permanentAddress'
+                                        value={employee.permanentAddress}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
                                 </div>
                             </div>
+                        </div>
 
-                            <div className='row mb-2'>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>HR Manager:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter HR Manager'
-                                            name='hrManager'
-                                            value={employee.hrManager}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className='col-md-6'>
-                                    <div className='form-group'>
-                                        <label className='form-label'>Payroll Manager:</label>
-                                        <input
-                                            type='text'
-                                            placeholder='Enter Payroll Manager'
-                                            name='payrollManager'
-                                            value={employee.payrollManager}
-                                            className='form-control'
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                        <div className='row mb-3'>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Date of Joining:</label>
+                                    <input
+                                        type='date'
+                                        name='dateOfJoining'
+                                        value={employee.dateOfJoining}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
                                 </div>
                             </div>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Date of Birth:</label>
+                                    <input
+                                        type='date'
+                                        name='dateOfBirth'
+                                        value={employee.dateOfBirth}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                        </div>
 
-                            <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Save</button>
-                            <button className='btn btn-danger' onClick={() => navigate('/employees')} style={{ marginLeft: '10px' }}>Cancel</button>
-                        </form>
-                    </div>
+                        <div className='row mb-3'>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>State:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter State'
+                                        name='state'
+                                        value={employee.state}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Branch:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter Branch'
+                                        name='branch'
+                                        value={employee.branch}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='row mb-3'>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Product:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter Product'
+                                        name='product'
+                                        value={employee.product}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Manager:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter Manager'
+                                        name='manager'
+                                        value={employee.manager}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='row mb-3'>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>HR Manager:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter HR Manager'
+                                        name='hrManager'
+                                        value={employee.hrManager}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div className='col-md-6'>
+                                <div className='form-group'>
+                                    <label className='form-label'>Payroll Manager:</label>
+                                    <input
+                                        type='text'
+                                        placeholder='Enter Payroll Manager'
+                                        name='payrollManager'
+                                        value={employee.payrollManager}
+                                        className='form-control'
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className='d-flex justify-content-end'>
+                            <button type='submit' className='btn btn-success me-2'>Save</button>
+                            <button type='button' className='btn btn-danger' onClick={() => navigate('/employees')}>Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

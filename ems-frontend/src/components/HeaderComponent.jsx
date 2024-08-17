@@ -2,14 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa';
 import LeftAccordion from './LeftAccordion';
-import ProfileComponent from './ProfileComponent'; // Import the ProfileComponent
+import ProfileComponent from './ProfileComponent'; 
 import { AuthContext } from '../context/AuthContext';
 
 const HeaderComponent = () => {
     const { isAuthenticated } = useContext(AuthContext);
     const [isOpen, setIsOpen] = useState(true); 
     const [dateTime, setDateTime] = useState(new Date());
-    const [showProfilePopup, setShowProfilePopup] = useState(false); // State to manage profile popup visibility
+    const [showProfilePopup, setShowProfilePopup] = useState(false); 
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -33,11 +33,11 @@ const HeaderComponent = () => {
     };
 
     const handleProfileClick = () => {
-        setShowProfilePopup(true); // Show profile popup on click
+        setShowProfilePopup(true); 
     };
 
     const handleClosePopup = () => {
-        setShowProfilePopup(false); // Close profile popup
+        setShowProfilePopup(false); 
     };
 
     const headerStyle = {
@@ -79,11 +79,12 @@ const HeaderComponent = () => {
             <div style={dateStyle}>
                 {formatDateTime(dateTime)}
             </div>
+            {isAuthenticated &&
             <div style={profileIconStyle} onClick={handleProfileClick}>
                 <FaUserCircle size={30} />
-            </div>
+            </div>}
             <LeftAccordion isOpen={isOpen} />
-            {showProfilePopup && <ProfileComponent onClose={handleClosePopup} />} {/* Render ProfileComponent as a popup */}
+            {showProfilePopup  &&<ProfileComponent onClose={handleClosePopup} />} {/* Render ProfileComponent as a popup */}
         </header>
     );
 };

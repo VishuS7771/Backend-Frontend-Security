@@ -6,6 +6,7 @@ import com.mas.ems.exception.ResourceNotFoundException;
 import com.mas.ems.repository.EmployeeRepository;
 import com.mas.ems.repository.LeaveRepository;
 import com.mas.ems.repository.LeaveTypeRepository;
+import com.mas.ems.service.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
-public class LeaveServiceImpl {
+public class LeaveServiceImpl  implements LeaveService {
 
     @Autowired
     private LeaveRepository leaveRepository;
@@ -24,6 +25,7 @@ public class LeaveServiceImpl {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @Override
     public Leave applyLeave(LeaveDto leaveDto) {
         Leave leave = new Leave();
         if(leaveDto.getLeaveId()!=null){
@@ -40,32 +42,38 @@ public class LeaveServiceImpl {
         return leaveRepository.save(leave);
     }
 
+    @Override
     public List<Leave> getLeavesByUser(Long empId) {
         return leaveRepository.findByEmpId(empId);
     }
 
+    @Override
     public void approveLeave(Long leaveId) {
         Leave leave =leaveRepository.findById(leaveId).orElseThrow(()-> new ResourceNotFoundException("leave not found with"+ leaveId ,"400"));
         leave.setStatus("Approved");
         leaveRepository.save(leave);
     }
 
+    @Override
     public void rejectLeave(Long leaveId) {
         Leave leave =leaveRepository.findById(leaveId).orElseThrow(()-> new ResourceNotFoundException("leave not found with"+ leaveId ,"400"));
         leave.setStatus("Rejected");
         leaveRepository.save(leave);
     }
 
+    @Override
     public Leave getLeaveById(long leaveId) {
         Leave leave =leaveRepository.findById(leaveId).orElseThrow(()-> new ResourceNotFoundException("leave not found with"+ leaveId ,"400"));
         return leave;
     }
 
-    public void deletleave(long leaveId){
+    @Override
+    public void deleteLeave(long leaveId){
         Leave leave =leaveRepository.findById(leaveId).orElseThrow(()-> new ResourceNotFoundException("leave not found with"+ leaveId ,"400"));
         leaveRepository.deleteById(leave.getLeaveId());
     }
 
+    @Override
     public List<Leave> getAllLeaves() {
         return leaveRepository.findAll();
     }

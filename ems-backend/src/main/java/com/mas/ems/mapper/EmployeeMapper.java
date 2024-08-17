@@ -28,9 +28,7 @@ public class EmployeeMapper {
         if (employee == null) {
             return null;
         }
-
         EmployeeDto employeeDto = new EmployeeDto();
-
         employeeDto.setEmpId(employee.getEmpId());
         employeeDto.setName(employee.getName());
         employeeDto.setDesignationId(employee.getDesignation() != null ? employee.getDesignation().getDesignationId() : null);
@@ -48,8 +46,6 @@ public class EmployeeMapper {
         employeeDto.setManager(employee.getManager());
         employeeDto.setHrManager(employee.getHrManager());
         employeeDto.setPayrollManager(employee.getPayrollManager());
-
-
         return employeeDto;
     }
 
@@ -57,16 +53,15 @@ public class EmployeeMapper {
         if (employeeDto == null) {
             return null;
         }
-
         Employee employee = new Employee();
         employee.setEmpId(employeeDto.getEmpId());
         employee.setName(employeeDto.getName());
-        Designation designation1=designationRepository.findById(employeeDto.getDesignationId()).orElseThrow(() ->new ResourceNotFoundException("Designation mot found with designationId"+employeeDto.getDesignationId(),"404"));
+        Designation designation1=designationRepository.findById(employeeDto.getDesignationId()).orElseThrow(() ->new ResourceNotFoundException("Designation not found with designationId"+employeeDto.getDesignationId(),"404"));
         employee.setDesignation(designation1);
         employee.setEmail(employeeDto.getEmail());
         employee.setMobileNo(employeeDto.getMobileNo());
-        employee.setUserType(userTypeRepo.findById(employeeDto.getUserTypeId()).orElseThrow(() ->new ResourceNotFoundException("usertype mot found with userTypeId"+employeeDto.getUserTypeId(),"404")));
-        employee.setDepartment(departmentRepo.findById(employeeDto.getDepartmentId()).orElseThrow(() ->new ResourceNotFoundException("department mot found with departmentId"+employeeDto.getDepartmentId(),"404")));
+        employee.setUserType(userTypeRepo.findById(employeeDto.getUserTypeId()).orElseThrow(() ->new ResourceNotFoundException("usertype not found with userTypeId"+employeeDto.getUserTypeId(),"404")));
+        employee.setDepartment(departmentRepo.findById(employeeDto.getDepartmentId()).orElseThrow(() ->new ResourceNotFoundException("department not found with departmentId"+employeeDto.getDepartmentId(),"404")));
         employee.setDateOfJoining(employeeDto.getDateOfJoining());
         employee.setDateOfBirth(employeeDto.getDateOfBirth());
         employee.setCurrentAddress(employeeDto.getCurrentAddress());
@@ -77,7 +72,6 @@ public class EmployeeMapper {
         employee.setManager(employeeDto.getManager());
         employee.setHrManager(employeeDto.getHrManager());
         employee.setPayrollManager(employeeDto.getPayrollManager());
-
         return employee;
     }
 

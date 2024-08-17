@@ -1,7 +1,7 @@
 package com.mas.ems.controller;
 
 import com.mas.ems.entity.Department;
-import com.mas.ems.service.impl.DepartmentServiceImpl;
+import com.mas.ems.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ import java.util.List;
 public class DepartmentController {
 
     @Autowired
-    private DepartmentServiceImpl departmentService;
+    private DepartmentService departmentService;
 
     @GetMapping("/getAll")
     public List<Department> getAllDepartment(){

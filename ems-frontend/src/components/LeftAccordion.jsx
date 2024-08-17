@@ -98,6 +98,7 @@ const LeftAccordion = ({ isOpen }) => {
         fontSize: '14px',
         opacity: hasPunchedOutToday ? '0.6' : '1',
     };
+    
     const handleLogout = async () => {
         try {
             const token = localStorage.getItem('token');

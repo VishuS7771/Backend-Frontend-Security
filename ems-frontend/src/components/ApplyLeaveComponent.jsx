@@ -55,8 +55,8 @@ const ApplyLeaveComponent = () => {
                 };
 
                 if (leave.leaveId) {
-                    // Update existing leave
-                    axiosInstance.post(`/leave/apply`, leaveWithEmpId)
+                 
+                    axiosInstance.put(`/leave/${leave.leaveId}`, leaveWithEmpId)
                         .then(response => {
                             alert('Leave updated successfully');
                             navigate('/Applied-request');
@@ -65,7 +65,7 @@ const ApplyLeaveComponent = () => {
                             console.error('Error updating leave:', error);
                         });
                 } else {
-                    // Apply new leave
+                    
                     axiosInstance.post('/leave/apply', leaveWithEmpId)
                         .then(response => {
                             alert('Leave applied successfully');
@@ -85,6 +85,11 @@ const ApplyLeaveComponent = () => {
         let valid = true;
         const errorsCopy = {};
 
+        if (!leave.leaveTypeId) {
+            errorsCopy.leaveTypeId = 'Leave Type is required';
+            valid = false;
+        }
+
         if (!leave.startDate) {
             errorsCopy.startDate = 'Start Date is required';
             valid = false;
@@ -92,6 +97,9 @@ const ApplyLeaveComponent = () => {
         
         if (!leave.endDate) {
             errorsCopy.endDate = 'End Date is required';
+            valid = false;
+        } else if (new Date(leave.endDate) < new Date(leave.startDate)) {
+            errorsCopy.endDate = 'End Date cannot be earlier than Start Date';
             valid = false;
         }
         
@@ -108,18 +116,18 @@ const ApplyLeaveComponent = () => {
     };
 
     return (
-        <div className='container'>
-            <h2 className='text-center'>Apply Leave</h2>
+        <div className='container mt-5'>
+            <h2 className='text-center mb-4'>Apply Leave</h2>
             <div className='card'>
                 <div className='card-body'>
-                    <form>
-                        <div className='form-group'>
-                            <label>Leave Type:</label>
+                    <form onSubmit={applyLeave}>
+                        <div className='form-group mb-3'>
+                            <label className='form-label'>Leave Type:</label>
                             <select
                                 name='leaveTypeId'
                                 value={leave.leaveTypeId}
                                 onChange={handleChange}
-                                className={`form-control ${errors.leaveTypeId ? 'is-invalid' : ''}`}
+                                className={`form-select ${errors.leaveTypeId ? 'is-invalid' : ''}`}
                             >
                                 <option value=''>--Select Leave Type--</option>
                                 {leaveTypes.map(type => (
@@ -131,8 +139,8 @@ const ApplyLeaveComponent = () => {
                             {errors.leaveTypeId && <div className='invalid-feedback'>{errors.leaveTypeId}</div>}
                         </div>
                         
-                        <div className='form-group'>
-                            <label>Start Date:</label>
+                        <div className='form-group mb-3'>
+                            <label className='form-label'>Start Date:</label>
                             <input
                                 type='date'
                                 name='startDate'
@@ -143,8 +151,8 @@ const ApplyLeaveComponent = () => {
                             {errors.startDate && <div className='invalid-feedback'>{errors.startDate}</div>}
                         </div>
 
-                        <div className='form-group'>
-                            <label>End Date:</label>
+                        <div className='form-group mb-3'>
+                            <label className='form-label'>End Date:</label>
                             <input
                                 type='date'
                                 name='endDate'
@@ -154,8 +162,9 @@ const ApplyLeaveComponent = () => {
                             />
                             {errors.endDate && <div className='invalid-feedback'>{errors.endDate}</div>}
                         </div>
-                        <div className='form-group'>
-                            <label>Remarks:</label>
+
+                        <div className='form-group mb-3'>
+                            <label className='form-label'>Remarks:</label>
                             <textarea
                                 name='remarks'
                                 value={leave.remarks}
@@ -164,7 +173,7 @@ const ApplyLeaveComponent = () => {
                             />
                         </div>
 
-                        <button className='btn btn-success' onClick={applyLeave}>
+                        <button type='submit' className='btn btn-success'>
                             {leave.leaveId ? 'Update Leave' : 'Apply Leave'}
                         </button>
                     </form>

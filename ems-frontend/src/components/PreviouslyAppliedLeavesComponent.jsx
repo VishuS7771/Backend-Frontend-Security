@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../services/axiosInstance';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { FaEdit, FaTrashAlt, FaCheck, FaTimes } from 'react-icons/fa';
 
 const PreviouslyAppliedLeavesComponent = () => {
     const [appliedLeaves, setAppliedLeaves] = useState([]);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedLeave, setSelectedLeave] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,7 +27,8 @@ const PreviouslyAppliedLeavesComponent = () => {
     }, []);
 
     const handleEdit = (leave) => {
-        navigate('/leave-request', { state: { leave } });
+        setSelectedLeave(leave);
+        setShowEditModal(true);
     };
 
     const handleDelete = async (leaveId) => {
@@ -93,7 +95,7 @@ const PreviouslyAppliedLeavesComponent = () => {
                     <tr>
                         <th style={headerStyle}>Leave Id</th>
                         <th style={headerStyle}>Emp Id</th>
-                        <th style={headerStyle}>Emplyee Name</th>
+                        <th style={headerStyle}>Employee Name</th>
                         <th style={headerStyle}>Leave Type</th>
                         <th style={headerStyle}>Start Date</th>
                         <th style={headerStyle}>End Date</th>
@@ -146,11 +148,54 @@ const PreviouslyAppliedLeavesComponent = () => {
                     <Modal.Title>Edit Leave</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {/* Include form for editing the leave here */}
+                    {selectedLeave && (
+                        <Form>
+                            <Form.Group className='mb-3'>
+                                <Form.Label>Leave Type</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    value={selectedLeave.leaveType.leaveType}
+                                    readOnly
+                                />
+                            </Form.Group>
+                            <Form.Group className='mb-3'>
+                                <Form.Label>Start Date</Form.Label>
+                                <Form.Control
+                                    type='date'
+                                    value={selectedLeave.startDate}
+                                    readOnly
+                                />
+                            </Form.Group>
+                            <Form.Group className='mb-3'>
+                                <Form.Label>End Date</Form.Label>
+                                <Form.Control
+                                    type='date'
+                                    value={selectedLeave.endDate}
+                                    readOnly
+                                />
+                            </Form.Group>
+                            <Form.Group className='mb-3'>
+                                <Form.Label>Remarks</Form.Label>
+                                <Form.Control
+                                    as='textarea'
+                                    value={selectedLeave.remarks}
+                                    readOnly
+                                />
+                            </Form.Group>
+                            <Form.Group className='mb-3'>
+                                <Form.Label>Status</Form.Label>
+                                <Form.Control
+                                    type='text'
+                                    value={selectedLeave.status}
+                                    readOnly
+                                />
+                            </Form.Group>
+                        </Form>
+                    )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={() => setShowEditModal(false)}>Close</Button>
-                    <Button variant='primary'>Save Changes</Button>
+                    <Button variant='primary' onClick={() => {/* Handle save changes */}}>Save Changes</Button>
                 </Modal.Footer>
             </Modal>
         </div>

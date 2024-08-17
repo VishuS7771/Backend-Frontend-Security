@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use(
             window.location.href = '/unauthorized';
         }
         return Promise.reject(error);
-    }
+    }   
 );
 
 export const listEmployees = () => axiosInstance.get('/list');

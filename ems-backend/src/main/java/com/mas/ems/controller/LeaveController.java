@@ -2,7 +2,7 @@ package com.mas.ems.controller;
 
 import com.mas.ems.dto.LeaveDto;
 import com.mas.ems.entity.Leave;
-import com.mas.ems.service.impl.LeaveServiceImpl;
+import com.mas.ems.service.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import java.util.List;
 public class LeaveController {
 
     @Autowired
-    private LeaveServiceImpl leaveService;
+    private LeaveService leaveService;
 
     @PostMapping("/apply")
     public ResponseEntity<Leave> applyLeave(@RequestBody LeaveDto leaveDto) {
@@ -49,7 +49,7 @@ public class LeaveController {
 
     @DeleteMapping("/delete/{leaveId}")
     public void deleteLeaveById(@PathVariable long leaveId){
-     leaveService.deletleave(leaveId);
+     leaveService.deleteLeave(leaveId);
     }
 
     @GetMapping("getAll")

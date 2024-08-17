@@ -67,7 +67,7 @@ const AttendanceComponent = () => {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB').replace(/\//g, '-'); // dd-mm-yy format
+        return date.toLocaleDateString('en-GB').replace(/\//g, '-');
     };
 
     const formatClockInOut = (clockIn, clockOut) => {
@@ -81,14 +81,14 @@ const AttendanceComponent = () => {
         if (!clockIn || !clockOut) return 'N/A';
         const start = new Date(clockIn);
         const end = new Date(clockOut);
-        const diff = (end - start) / 3600000; // Difference in hours
+        const diff = (end - start) / 3600000; 
         return `${diff.toFixed(2)} hours`;
     };
 
     const isWeeklyOff = (date) => {
         const day = date.getDay();
-        if (day === 0) return true; // Sunday
-        if (day === 6 && getWeekOfMonth(date) === 2) return true; // Second Saturday
+        if (day === 0) return true; 
+        if (day === 6 && getWeekOfMonth(date) === 2) return true; 
         return false;
     };
 
@@ -99,7 +99,7 @@ const AttendanceComponent = () => {
     };
 
     const renderCalendar = () => {
-        if (!dateOfJoining) return null; // Wait until dateOfJoining is fetched
+        if (!dateOfJoining) return null;
 
         const daysInMonth = getMonthDays(displayYear, displayMonth);
         const firstDayOfMonth = new Date(displayYear, displayMonth - 1, 1).getDay();
@@ -127,10 +127,10 @@ const AttendanceComponent = () => {
                         style={{
                             ...styles.day,
                             backgroundColor: isBeforeJoining
-                                ? '#e9ecef' // Light gray for before date of joining
+                                ? '#e9ecef'
                                 : isWeeklyOffDay && isPastDate
-                                    ? 'skyblue' // sky blue for weekly off
-                                    : (hasAttendance ? '#d4edda' : (isPastDate ? '#f8d7da' : '#e9ecef')), // Light green for attendance, light red for no attendance, light gray for future
+                                    ? 'skyblue' 
+                                    : (hasAttendance ? '#d4edda' : (isPastDate ? '#f8d7da' : '#e9ecef')), 
                         }}
                     >
                         <div style={styles.date}>{formatDate(day)}</div>
@@ -160,7 +160,7 @@ const AttendanceComponent = () => {
             }
         }
         if (week.length > 0) {
-            // Fill the last week with empty divs if necessary
+
             while (week.length < 7) {
                 week.push(<div key={`empty-end-${week.length}`} style={styles.day}></div>);
             }
@@ -269,7 +269,7 @@ const styles = {
         flexWrap: 'wrap',
     },
     day: {
-        flex: '1 0 14.28%', // Adjust to ensure equal box sizes
+        flex: '1 0 14.28%', 
         height: '100px',
         boxSizing: 'border-box',
         border: '1px solid #ddd',

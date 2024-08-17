@@ -17,6 +17,7 @@ import ApplyLeaveComponent from './components/ApplyLeaveComponent';
 import PreviouslyAppliedLeavesComponent from './components/PreviouslyAppliedLeavesComponent';
 import ProfileComponent from './components/ProfileComponent';
 import LogoutComponent from './components/LogoutComponent';
+import SessionTimeout from './components/SessionTimeout';
 
 function App() {
     const contentStyle = {
@@ -28,8 +29,10 @@ function App() {
     return (
         <AuthProvider>
             <BrowserRouter>
+            <SessionTimeout />
                 <HeaderComponent />
                 <LeftAccordion /> {/* Add LeftAccordion here */}
+                  
                 <div style={contentStyle}>
                     <Routes>
                         <Route path='/' element={<Navigate to="/login" />} />
